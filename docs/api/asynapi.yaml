@@ -1,0 +1,274 @@
+# yaml-language-server: $schema=https://asyncapi.com/schema-store/3.0.0-without-%24id.json
+
+asyncapi: '3.0.0'
+info:
+  title: riden API
+  version: 1.0.0
+  description: The API for the riden system permits clients to schedule boat rides
+defaultContentType: application/json
+servers:
+  production:
+    host: 127.0.0.1
+    protocol: wss
+    description: riden server for real time communication
+channels:
+  riden:
+    address: /api/v1/riden
+    messages:
+      reserveTrip:
+        $ref: '#/components/messages/reserveTrip'
+      ack:
+        $ref: '#/components/messages/ack'
+      atDock:
+        $ref: '#/components/messages/atDock'
+      onBoat:
+        $ref: '#/components/messages/onBoat'
+      offBoat:
+        $ref: '#/components/messages/offBoat'
+      boatStatus:
+        $ref: '#/components/messages/boatStatus'
+      arrived:
+        $ref: '#/components/messages/arrived'
+operations:
+  reserveTripRequest:
+    action: send
+    channel:
+      $ref: '#/channels/riden'
+    messages:
+      - $ref: '#/channels/riden/messages/reserveTrip'
+    reply:
+      messages:
+        - $ref: '#/channels/riden/messages/ack'
+      channel:
+        $ref: '#/channels/riden'
+  atDock:
+    action: send
+    channel:
+      $ref: '#/channels/riden'
+    messages:
+      - $ref: '#/channels/riden/messages/atDock'
+  onBoat:
+    action: send
+    channel:
+      $ref: '#/channels/riden'
+    messages:
+      - $ref: '#/channels/riden/messages/onBoat'
+  offBoat:
+    action: send
+    channel:
+      $ref: '#/channels/riden'
+    messages:
+      - $ref: '#/channels/riden/messages/offBoat'
+  boatStatus:
+    action: receive
+    channel:
+      $ref: '#/channels/riden'
+    messages:
+      - $ref: '#/channels/riden/messages/boatStatus'
+  arrived:
+    action: receive
+    channel:
+      $ref: '#/channels/riden'
+    messages:
+      - $ref: '#/channels/riden/messages/arrived'
+components:
+  messages:
+    reserveTrip:
+      name: reserveTrip
+      title: Reserve trip
+      summary: Reserves a trip from the source dock to the destination dock
+      payload:
+        type: object
+        properties:
+          messageType:
+            type: string
+            const: reserveTrip
+          authToken:
+            type: string
+            description: The token that authorizes the client to use the riden system
+          clientID:
+            type: string
+            description: The unique ID of the client making the request
+          sourceDock:
+            $ref: '#/components/schemas/dock'
+          destinationDock:
+            $ref: '#/components/schemas/dock'
+    atDock:
+      name: atDock
+      title: At Dock
+      summary: Notifies the system that the client is prepared to board the specified boat at the specified dock
+      payload:
+        type: object
+        properties:
+          messageType:
+            type: string
+            const: atDock
+          clientID:
+            type: string
+            description: The ID of the client
+          boat:
+            $ref: '#/components/schemas/boat'
+          dock:
+            $ref: '#/components/schemas/dock'
+          transactionID:
+            type: string
+            description: The unique ID for the trip reservation
+    onBoat:
+      name: onBoat
+      title: On Boat
+      summary: Notifies the system that the client has boarded the specified boat
+      payload:
+        type: object
+        properties:
+          messageType:
+            type: string
+            const: onBoat
+          clientID:
+            type: string
+            description: The ID of the client
+          boat:
+            $ref: '#/components/schemas/boat'
+          transactionID:
+            type: string
+            description: The unique ID for the trip reservation
+    offBoat:
+      name: offBoat
+      title: Off Boat
+      summary: Notifies the system that the client has disembarked the specified boat
+      payload:
+        type: object
+        properties:
+          messageType:
+            type: string
+            const: offBoat
+          clientID:
+            type: string
+            description: The ID of the client
+          boat:
+            $ref: '#/components/schemas/boat'
+          transactionID:
+            type: string
+            description: The unique ID for the trip reservation
+    ack:
+      name: ack
+      title: Ack
+      summary: Ackment reply sent to the client after a reserveTrip request
+      payload:
+        type: object
+        properties:
+          messageType:
+            type: string
+            const: ack
+          clientID:
+            type: string
+            description: The client that sent a reserveTrip request
+          isReserved:
+            type: boolean
+            description: Confirmation of the trip reservation
+          boat:
+            ref: '#/components/schemas/boat'
+          transactionID:
+            type: string
+            description: The unique ID for the trip reservation that should be included in messages regarding this trip
+    boatStatus:
+      name: boatStatus
+      title: Boat status
+      summary: Notifies the client of the status of the specified boat
+      payload:
+        type: object
+        properties:
+          MessageType:
+            type: string
+            const: boatStatus
+          boat:
+            $ref: "#/components/schemas/boat"
+          servicState:
+            type: integer
+            format: int32
+            description: The service state of the boat
+            enum: [0, 1, 2, 3]
+            x-serviceState:
+              $ref: '#/components/schemas/serviceState'
+          previousDock:
+            description: The previous dock where the boat was located
+            $ref: '#/components/schemas/dock'
+          currentDock:
+            description: The current dock where the boat is located
+            $ref: '#/components/schemas/dock'
+          nextDock:
+            description: The next dock where the boat will be located
+            $ref: '#/components/schemas/dock'
+    arrived:
+      name: arrived
+      title: Arrived
+      summary: Notifies the client that the reserved boat has arrived at the source dock and the gangway is open
+      payload:
+        type: object
+        properties:
+          MessageType:
+            type: string
+            const: arrived
+          clientID:
+            type: string
+            description: The client that sent a reserveTrip message
+          boat:
+            ref: '#/components/schemas/boat'
+          dock:
+            $ref: '#/components/schemas/dock'
+          transactionID:
+            type: string
+            description: The unique ID for the trip reservation
+  schemas:
+    dock:
+      type: object
+      properties:
+        address:
+          type: object
+          description: The address where the dock is located
+          $ref: '#/components/schemas/address'
+        gangway:
+          type: string
+          description: The ramp that will be used to board the boat
+          enum: [
+            "fore",
+            "aft"
+            ]
+    address:
+      type: object
+      properties:
+        number:
+          type: integer
+          format: int32
+          description: The street number for the address
+        street:
+          type: string
+          description: The street name for the address
+    boat:
+      type: object
+      properties:
+        boatID:
+          type: integer
+          format: int32
+          description: The ID of the boat
+        name:
+          type: string
+          description: The name of the boat
+    serviceState:
+      type: object
+      properties:
+        unknown:
+          type: integer
+          format: int32
+          const: 0
+        onTime:
+          type: integer
+          format: int32
+          const: 1
+        delayed:
+          type: integer
+          format: int32
+          const: 2
+        unavailable:
+          type: integer
+          format: int32
+          const: 3

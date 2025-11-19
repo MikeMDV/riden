@@ -1,0 +1,217 @@
+syntax="proto3";
+
+option go_package = "riden/adapter/adapter";
+
+package adapter;
+
+// The Adapter service RPC definitions are implemented as bi-directional
+// streaming RPCs. These RPCs may be pushed by either the client or the server at any
+// time. The two streams operate independently, so clients and servers can read and
+// write in whatever order they like. The messages must be defined in terms of a
+// client request and a server response, but since these are meant to be asynchronous
+// messages, the messages from the MockLogic(client) to the Adapter(server) will have an
+// Empty response that the Adapter(server) will not send. The Adapter to MockLogic
+// messages will have an Empty request that the MockLogic will not send to the Adapter.
+// The MockLogic(client) is not required to send the Empty requests in order to receive
+// messages from the Adapter(server) and the Adapter is not required to send
+// the Empty response to the MockLogic after receiveing a message.
+
+// The Adapter service definition
+service Adapter {
+    // A bi-directional streaming RPC.
+    // The MockLogic(gRPC client) receives a Reserve request that an API client has sent
+    rpc ReserveTrip(stream Empty) returns (stream ReserveTripMessage) {}
+
+    // A bi-directional streaming RPC.
+    // The MockLogic(gRPC client) sends an Ackment that a previously sent
+    // ReserveMessage is being handled
+    rpc Ack(stream AckMessage) returns (stream Empty) {}
+
+    // A bi-directional streaming RPC.
+    // The MockLogic(gRPC client) receives an AtDock message that an API client has sent
+    rpc AtDock(stream Empty) returns (stream AtDockMessage) {}
+
+    // A bi-directional streaming RPC.
+    // The MockLogic(gRPC client) receives an OnBoat message that an API client has sent
+    rpc OnBoat(stream Empty) returns (stream OnBoatMessage) {}
+
+    // A bi-directional streaming RPC.
+    // The MockLogic(gRPC client) receives an OffBoat message that an API client has sent
+    rpc OffBoat(stream Empty) returns (stream OffBoatMessage) {}
+
+    // A bi-directional streaming RPC.
+    // The MockLogic(gRPC client) sends an BoatStatus message that the Adapter will
+    // broadcast
+    rpc BoatStatus(stream BoatStatusMessage) returns (stream Empty) {}
+
+    // A bi-directional streaming RPC.
+    // The MockLogic(gRPC client) sends an Arrived message that the Adapter will send
+    // to the API client
+    rpc Arrived(stream ArrivedMessage) returns (stream Empty) {}
+}
+
+// Address represents the number and street name of an address where a dock is
+// located
+message Address {
+    int32  Number = 1;
+    string Street = 2;
+}
+
+// Dock represents the address and gangway combination where the client will
+// board the boat
+message Dock {
+    Address Address = 1;
+    string  Gangway = 2;
+}
+
+// Boat represents the data for individual boats
+message Boat {
+    int32  BoatID = 1;
+    string Name   = 2;
+}
+
+// ServiceState represents enum values for the following states of the
+// boats
+enum ServiceState {
+    Unknown     = 0;
+    OnTime      = 1;
+    Delayed     = 2;
+    Unavailable = 3;
+}
+
+// ClientData holds the client connection data that the Adapter needs to
+// send messages
+message ClientData {
+    string ConnName = 1;
+    string ConnType = 2;
+}
+
+// ReserveTripAPIMessage represents the ReserveTrip API message that a client
+// sends to the MockLogic
+message ReserveTripAPIMessage {
+    // MessageType is a const = "reserveTrip"
+    string MessageType     = 1;
+    string AuthToken       = 2;
+    string ClientID        = 3;
+    Dock   SourceDock      = 5;
+    Dock   DestinationDock = 6;
+}
+
+// AckAPIMessage represents the Ack API message that the MockLogic
+// sends to a client indicating that a ReserveTrip message is being processed
+message AckAPIMessage {
+    // MessageType is a const = "ack"
+    string MessageType   = 1;
+    string ClientID      = 2;
+    bool   IsReserved    = 3;
+    Boat   Boat          = 4;
+    string TransactionID = 5;
+}
+
+// AtDockAPIMessage reperesents the AtDock API message that the client
+// sends to the MockLogic
+message AtDockAPIMessage {
+    // MessageType is a const = "atDock"
+    string MessageType   = 1;
+    string ClientID      = 2;
+    Boat   Boat          = 3;
+    Dock   Dock          = 4;
+    string TransactionID = 5;
+}
+
+// OnBoatAPIMessage reperesents the OnBoat API message that the client
+// sends to the MockLogic
+message OnBoatAPIMessage {
+    // MessageType is a const = "onBoat"
+    string MessageType   = 1;
+    string ClientID      = 2;
+    Boat   Boat          = 3;
+    string TransactionID = 4;
+}
+
+// OffBoatAPIMessage reperesents the OffBoat API message that the client
+// sends to the MockLogic
+message OffBoatAPIMessage {
+    // MessageType is a const = "offBoat"
+    string MessageType   = 1;
+    string ClientID      = 2;
+    Boat   Boat          = 3;
+    string TransactionID = 4;
+}
+
+// BoatStatusAPIMessage represents the BoatStatus API message that the MockLogic
+// sends to all clients
+message BoatStatusAPIMessage {
+    // MessageType is a const = "boatStatus"
+    string       MessageType  = 1;
+    Boat         Boat         = 2;
+    ServiceState ServiceState = 3;
+    Dock         PreviousDock = 4;
+    Dock         CurrentDock  = 5;
+    Dock         NextDock     = 6;
+}
+
+// ArrivedAPIMessage reperesents the Arrived API message that the
+// MockLogic sends to the client
+message ArrivedAPIMessage {
+    // MessageType is a const = "arrived"
+    string MessageType   = 1;
+    string ClientID      = 2;
+    Boat   Boat          = 3;
+    Dock   Dock          = 4;
+    string TransactionID = 5;
+}
+
+// ReserveTripMessage represents the Reserve API message and the client
+// connection data that the Adapter uses
+message ReserveTripMessage {
+    ReserveTripAPIMessage APIMessage = 1;
+    ClientData            ClientData = 2;
+}
+
+// AckMessage represents the Ack API message and the client
+// connection data that the Adapter uses
+message AckMessage {
+    AckAPIMessage APIMessage = 1;
+    ClientData    ClientData = 2;
+}
+
+// AtDockMessage represents the AtDock API message and the client
+// connection data that the Adapter uses
+message AtDockMessage {
+    AtDockAPIMessage APIMessage = 1;
+    ClientData       ClientData = 2;
+}
+
+// OnBoatMessage represents the OnBoat API message and the client
+// connection data that the Adapter uses
+message OnBoatMessage {
+    OnBoatAPIMessage APIMessage = 1;
+    ClientData       ClientData = 2;
+}
+
+// OffBoatMessage represents the OffBoat API message and the client
+// connection data that the Adapter uses
+message OffBoatMessage {
+    OffBoatAPIMessage APIMessage = 1;
+    ClientData        ClientData = 2;
+}
+
+// BoatStatusMessage represents the BoatStatus API message and the client
+// connection data that the Adapter uses
+message BoatStatusMessage {
+    BoatStatusAPIMessage APIMessage = 1;
+    ClientData           ClientData = 2;
+}
+
+// ArrivedMessage represents the Arrived API message and the client
+// connection data that the Adapter uses
+message ArrivedMessage {
+    ArrivedAPIMessage APIMessage = 1;
+    ClientData        ClientData = 2;
+}
+
+// Empty represents an empty message that is not expected to
+// ever be sent or received and is used for one half of a
+// bi-directional streaming message service
+message Empty {}
