@@ -59,9 +59,9 @@ var WriteControlDeadline time.Duration = 5 * time.Second
 // a [string]*Client map
 var safeClients sync.Map
 
-// AdapterConnection holds a special instance of a Client for the translation layer
+// AdapterConnection holds a special instance of a Client for the adapter
 // client to communicate with the WebSocket server. This is the only connection
-// between the WebSocket server and the translation layer.
+// between the WebSocket server and the adapter.
 type AdapterConnection struct {
 	mux sync.RWMutex
 	Client
@@ -168,7 +168,7 @@ type adapterWebSocketHandler struct {
 	upgrader websocket.Upgrader
 }
 
-// ServeHTTP handles an incoming connection from the translation layer and upgrades
+// ServeHTTP handles an incoming connection from the adapter and upgrades
 // the connection to a WebSocket connection. ServeHTTP() is launched in its own
 // goroutine by the listener and then the message reader loop is called here,
 // so that it continues to run in the same goroutine. If the message reader loop
