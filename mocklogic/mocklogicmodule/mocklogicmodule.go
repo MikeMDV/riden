@@ -26,9 +26,9 @@ var StopSimFrmaes chan int
 
 var SimBoatStatusChannel chan a.BoatStatusAPIMessage
 
-// InitiateSimFrames builds the sim frame ring and launches the goroutine
+// InitializeSimFrames builds the sim frame ring and launches the goroutine
 // that advances the frames
-func InitiateSimFrames() {
+func InitializeSimFrames() {
 	SimFrameRing = BuildSimFrameRing(SimFrames)
 
 	SimFrameChannel = make(chan []a.BoatStatusAPIMessage)
@@ -54,7 +54,7 @@ func main() {
 
 	fmt.Printf("Log Directory: %s\n", LogDirectory)
 
-	logFile := path.Join(LogDirectory, "adapter.log")
+	logFile := path.Join(LogDirectory, "mocklogic.log")
 
 	// Startup procedures
 	var err error
@@ -64,5 +64,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	InitiateSimFrames()
+	InitializeSimFrames()
+
+	// Block
+	select{}
 }
