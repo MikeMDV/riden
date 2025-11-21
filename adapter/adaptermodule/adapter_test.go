@@ -849,7 +849,7 @@ func TestReceivingMessageFromMockLogicWithGRPC(t *testing.T) {
 	}
 	defer conn.Close()
 	client := pb.NewAdapterClient(conn)
-	ctx, _ := context.WithTimeout(context.Background(), 20*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	stream, err := client.Ack(ctx)
 	if err != nil {
 		Logger.Error().Msgf("client.Ack failed to create stream: %v", err)
@@ -885,6 +885,7 @@ func TestReceivingMessageFromMockLogicWithGRPC(t *testing.T) {
 	}
 
 	Logger.Info().Msg("TestReceivingMessageFromMockLogicWithGRPC cleaning up")
+	cancel()
 	stream.CloseSend()
 	conn.Close()
 	GRPCServer.Stop()
