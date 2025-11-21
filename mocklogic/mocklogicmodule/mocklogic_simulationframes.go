@@ -50,6 +50,10 @@ type SimulationFrames struct {
 	BoatLocations [16][2]a.BoatStatusAPIMessage
 }
 
+// SimFrames simulates two boats moving between 4 docks. The total
+// number of frames is 16, with the boats remaining stationary at the
+// docks for two frames each and spending two frames traveling
+// between each dock.
 var SimFrames = SimulationFrames{
 	BoatLocations: [16][2]a.BoatStatusAPIMessage{
 		{
