@@ -1,7 +1,9 @@
 package main
 
 import (
+	"container/ring"
 	a "riden/adapter"
+	"time"
 )
 
 var SimBoat1 = a.Boat{
@@ -46,8 +48,14 @@ var SimDock4 = a.Dock{
 	Gangway: a.GangwayLocationFore,
 }
 
+const SimFrameTotal int = 16
+
+const SimBoatTotal int = 2
+
+const SimFrameDuration time.Duration = 15 * time.Second
+
 type SimulationFrames struct {
-	BoatLocations [16][2]a.BoatStatusAPIMessage
+	BoatLocations [SimFrameTotal][SimBoatTotal]a.BoatStatusAPIMessage
 }
 
 // SimFrames simulates two boats moving between 4 docks. The total
@@ -55,7 +63,7 @@ type SimulationFrames struct {
 // docks for two frames each and spending two frames traveling
 // between each dock.
 var SimFrames = SimulationFrames{
-	BoatLocations: [16][2]a.BoatStatusAPIMessage{
+	BoatLocations: [SimFrameTotal][SimBoatTotal]a.BoatStatusAPIMessage{
 		{
 			{
 				MessageType:  a.APIMessageTypeBoatStatus,
@@ -329,4 +337,47 @@ var SimFrames = SimulationFrames{
 			},
 		},
 	},
+}
+
+// BuildSimFrameRing converts places the SimulationFrames in a
+// Ring container. This circular container allows the frames to be
+// advanced through all the frames and wrap around to the beginning
+// by repeatedly calling Next()
+func BuildSimFrameRing(simFrames SimulationFrames) *ring.Ring {
+	frameRing := ring.New(len(simFrames.BoatLocations))
+
+	// Get the length of the ring
+	n := frameRing.Len()
+
+	// Initialize the ring with some integer values
+	for i := range n {
+		frameRing.Value = simFrames.BoatLocations[i]
+		frameRing = frameRing.Next()
+	}
+
+	return frameRing
+}
+
+// AdvanceSimFrames advances the sim frames and places the current frame
+// on the SimBoatStatus channel
+func AdvanceSimFrames() {
+	Logger.Info().Msg("EnteredAdvanceSimFrames()")
+	advance := time.Tick(SimFrameDuration)
+	for {
+		select {
+		case <-advance:
+			Logger.Info().Msg("Pushing sim frame and advancing")
+			statuses := SimFrameRing.Value.([]a.BoatStatusAPIMessage)
+			for _, boatStatus := range statuses {
+				SimBoatStatusChannel <- boatStatus
+			}
+			SimFrameRing = SimFrameRing.Next()
+
+		case stopSignal := <-StopSimFrmaes:
+			Logger.Info().Msgf("AdvanceSimFrames has received a stop signal, %d",
+				stopSignal)
+			// handle close
+			return
+		}
+	}
 }

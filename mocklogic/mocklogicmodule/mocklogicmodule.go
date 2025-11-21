@@ -1,10 +1,12 @@
 package main
 
 import (
+	"container/ring"
 	"flag"
 	"fmt"
 	"os"
 	"path"
+	a "riden/adapter"
 	"riden/logger"
 
 	"github.com/rs/zerolog"
@@ -15,6 +17,25 @@ var Logger zerolog.Logger
 
 var LogDirectory string
 var ParameterDirectory string
+
+var SimFrameRing *ring.Ring
+
+var SimFrameChannel chan []a.BoatStatusAPIMessage
+
+var StopSimFrmaes chan int
+
+var SimBoatStatusChannel chan a.BoatStatusAPIMessage
+
+// InitiateSimFrames builds the sim frame ring and launches the goroutine
+// that advances the frames
+func InitiateSimFrames() {
+	SimFrameRing = BuildSimFrameRing(SimFrames)
+
+	SimFrameChannel = make(chan []a.BoatStatusAPIMessage)
+	SimBoatStatusChannel = make(chan a.BoatStatusAPIMessage, SimBoatTotal)
+
+	go AdvanceSimFrames()
+}
 
 func Usage() {
 	fmt.Println("Usage:", os.Args[0], "log_dir log_level")
@@ -42,4 +63,6 @@ func main() {
 		fmt.Println("Error opening log file:", logFile, ":", err.Error())
 		os.Exit(1)
 	}
+
+	InitiateSimFrames()
 }
