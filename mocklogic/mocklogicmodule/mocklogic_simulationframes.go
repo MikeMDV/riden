@@ -339,17 +339,17 @@ var SimFrames = SimulationFrames{
 	},
 }
 
-// BuildSimFrameRing converts places the SimulationFrames in a
-// Ring container. This circular container allows the frames to be
-// advanced through all the frames and wrap around to the beginning
-// by repeatedly calling Next()
+// BuildSimFrameRing places the SimulationFrames in a Ring container.
+// This circular container allows the frames to be advanced through
+// all the frames and wrap around to the beginning by repeatedly
+// calling Next()
 func BuildSimFrameRing(simFrames SimulationFrames) *ring.Ring {
 	frameRing := ring.New(len(simFrames.BoatLocations))
 
 	// Get the length of the ring
 	n := frameRing.Len()
 
-	// Initialize the ring with some integer values
+	// Initialize the ring with SimulationFrames.BoatLocations
 	for i := range n {
 		frameRing.Value = simFrames.BoatLocations[i]
 		frameRing = frameRing.Next()
@@ -366,7 +366,7 @@ func AdvanceSimFrames() {
 	for {
 		select {
 		case <-advance:
-			Logger.Info().Msg("Pushing sim frame and advancing")
+			Logger.Info().Msg("Pushing sim frame to channel and advancing")
 			statuses := SimFrameRing.Value.([]a.BoatStatusAPIMessage)
 			for _, boatStatus := range statuses {
 				SimBoatStatusChannel <- boatStatus
