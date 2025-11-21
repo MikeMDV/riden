@@ -18,7 +18,7 @@ func (wsh mockAdapterReceiveHandler) ServeHTTP(w http.ResponseWriter, r *http.Re
 
 	c, err = wsh.upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		Logger.Error().Msgf("error when upgrading mock translation layer connection to websocket: %s", err.Error())
+		Logger.Error().Msgf("error when upgrading mock adapter connection to websocket: %s", err.Error())
 		return
 	}
 	Logger.Info().Msgf("Mock translation layer connected at remote address: %s", c.RemoteAddr().String())
