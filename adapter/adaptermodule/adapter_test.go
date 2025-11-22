@@ -207,12 +207,12 @@ func TestGetMessageFromWebSocketMsg(t *testing.T) {
 
 	for _, testCase := range cases {
 		adapterMsg := wss.NewAdapterMessage(testCase.connName, testCase.messageBytes)
-		translatoMsgBytes, err := json.Marshal(adapterMsg)
+		adapterMsgBytes, err := json.Marshal(adapterMsg)
 		if err != nil {
 			t.Fatalf("Error marshaling JSON in test %s",
 				testCase.name)
 		}
-		messageType, recdAdapterMessage, err := GetMessageFromWebSocketMsg(translatoMsgBytes)
+		messageType, recdAdapterMessage, err := GetMessageFromWebSocketMsg(adapterMsgBytes)
 
 		if testCase.expectedError == (err == nil) {
 			t.Fatalf("Expectation of error was %v for test %s but received error was: %v",
@@ -738,7 +738,7 @@ func TestSendingMessageToMockLogicWithGRPC(t *testing.T) {
 		Logger.Error().Msgf("Fail to dial gRPC: %v", err)
 	}
 	client := pb.NewAdapterClient(conn)
-	ctx, _ := context.WithTimeout(context.Background(), 20*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	stream, err := client.ReserveTrip(ctx)
 	if err != nil {
 		Logger.Error().Msgf("client.Reserve failed to create stream: %v", err)
@@ -798,6 +798,7 @@ func TestSendingMessageToMockLogicWithGRPC(t *testing.T) {
 	stream.CloseSend()
 	conn.Close()
 	GRPCServer.Stop()
+	cancel()
 }
 
 func TestReceivingMessageFromMockLogicWithGRPC(t *testing.T) {
@@ -885,8 +886,8 @@ func TestReceivingMessageFromMockLogicWithGRPC(t *testing.T) {
 	}
 
 	Logger.Info().Msg("TestReceivingMessageFromMockLogicWithGRPC cleaning up")
-	cancel()
 	stream.CloseSend()
 	conn.Close()
 	GRPCServer.Stop()
+	cancel()
 }

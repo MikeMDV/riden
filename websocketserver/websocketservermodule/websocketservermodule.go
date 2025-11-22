@@ -132,7 +132,7 @@ func (wsh clientWebSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Reque
 
 	if !AdapterConn.IsConnectionSet() {
 		// The adapter is not connected, so we will not upgrade this connection
-		Logger.Info().Msg("Translation layer is not connected.")
+		Logger.Info().Msg("Adapter is not connected.")
 		Logger.Info().Msgf("Not upgrading this connection attempt from remote address: %s",
 			r.RemoteAddr)
 		ReturnError(w, http.StatusInternalServerError)
@@ -189,7 +189,7 @@ func (wsh adapterWebSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Requ
 	if AdapterConn.IsConnectionSet() {
 		// There is already a connection to the adapter, so we will not upgrade this
 		// connection attempt. Only one connection from the adapter is allowed.
-		Logger.Info().Msgf("Translation layer is already connected from remote address: %s",
+		Logger.Info().Msgf("Adapter is already connected from remote address: %s",
 			AdapterConn.RemoteConnString())
 		Logger.Info().Msgf("Not upgrading this connection attempt from remote address: %s",
 			r.RemoteAddr)
@@ -199,10 +199,10 @@ func (wsh adapterWebSocketHandler) ServeHTTP(w http.ResponseWriter, r *http.Requ
 
 	c, err = wsh.upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		Logger.Error().Msgf("error %s when upgrading translation layer connection to websocket", err.Error())
+		Logger.Error().Msgf("error %s when upgrading adapter connection to websocket", err.Error())
 		return
 	}
-	Logger.Info().Msgf("Translation layer connected from remote address: %s", c.RemoteAddr().String())
+	Logger.Info().Msgf("Adapter connected from remote address: %s", c.RemoteAddr().String())
 
 	AdapterConn.Initialize(c)
 
