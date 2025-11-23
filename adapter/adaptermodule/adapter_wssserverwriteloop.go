@@ -19,6 +19,8 @@ func WSServerWriteLoop(wsServer *WebSocketServerConnnection) error {
 	for {
 		select {
 		case <-ping:
+			// Every 60 seconds, ping the WebSocketServer and set a 59 second timer to re-initialize the
+			// WebSocket connection. The pong handler will cancel this timer.
 			Logger.Info().Msg("Pinging WebSocketServer")
 			wsServer.Conn.WriteControl(websocket.PingMessage, []byte{}, time.Now().Add(WriteControlDeadline))
 			wsServer.KeepAliveTimer = time.AfterFunc(time.Duration(59*time.Second),

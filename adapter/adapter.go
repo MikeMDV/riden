@@ -6,6 +6,10 @@ var VersionNumber string
 // BuildDate - Build-time variable
 var BuildDate string
 
+var GRPCHost string = "localhost"
+var GRPCPort string = "8090"
+var GRPCServerAddress string = GRPCHost + ":" + GRPCPort
+
 // Connection types for communicating with clients
 const (
 	ConnectionTypeAll       string = "all" // Indicates a message that should be broadcast to all clients on all connections

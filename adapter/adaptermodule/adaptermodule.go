@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	a "riden/adapter"
 	"riden/logger"
 	pb "riden/proto"
 	wss "riden/websocketserver"
@@ -64,7 +65,6 @@ func (ws *WebSocketServerConnnection) Initialize() {
 
 func (ws *WebSocketServerConnnection) Reset() {
 	Logger.Info().Msg("Resetting WebSocketServer connection")
-	ws.Close <- 0
 	close(ws.Close)
 	close(ws.Write)
 
@@ -113,9 +113,10 @@ type MessageType string
 
 func InitializeConnections() {
 	// TODO: Define handshake messages between the MockLogic and the Adapter
-	// and only proceed to initiating API connections if the MockLogic has
-	// completed the handshake
-	// Connect to MockLogic through gRPC first, then initiate API client connections
+	// and only proceed to initiating the WebSocketServer connection if the
+	// MockLogic has completed the handshake
+	// Connect to MockLogic through gRPC first, then create WebSocketServer
+	// connection
 	go InitializeGRPCServer()
 
 	// Initialize WebSocketServer connection
@@ -134,7 +135,7 @@ func InitializeWebSocketServerConn() {
 
 func InitializeGRPCServer() {
 	// Start server
-	listener, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", 8090))
+	listener, err := net.Listen("tcp", a.GRPCServerAddress)
 	if err != nil {
 		Logger.Error().Msgf("Error: failed to listen: %s", err.Error())
 		return
@@ -155,7 +156,7 @@ func DialWebsocketServer() {
 	ws, response, err := websocket.DefaultDialer.Dial(WSServerURL, nil)
 	if err != nil {
 		Logger.Error().Msgf("Error dialing WebSocketServer: %s", err.Error())
-		WebSocketDialTimer = time.AfterFunc(time.Duration(2)*time.Second, DialWebsocketServer)
+		WebSocketDialTimer = time.AfterFunc(time.Duration(2*time.Second), DialWebsocketServer)
 		return
 	}
 
@@ -175,7 +176,7 @@ func DialWebsocketServer() {
 				response.StatusCode, err.Error())
 		}
 		if ok {
-			WebSocketDialTimer = time.AfterFunc(time.Duration(2)*time.Second, DialWebsocketServer)
+			WebSocketDialTimer = time.AfterFunc(time.Duration(2*time.Second), DialWebsocketServer)
 			return
 		}
 

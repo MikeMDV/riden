@@ -23,7 +23,7 @@ service Adapter {
     rpc ReserveTrip(stream Empty) returns (stream ReserveTripMessage) {}
 
     // A bi-directional streaming RPC.
-    // The MockLogic(gRPC client) sends an Ackment that a previously sent
+    // The MockLogic(gRPC client) sends an Acknowledgement that a previously sent
     // ReserveMessage is being handled
     rpc Ack(stream AckMessage) returns (stream Empty) {}
 

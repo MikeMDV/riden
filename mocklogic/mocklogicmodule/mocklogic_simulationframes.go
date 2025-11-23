@@ -3,6 +3,7 @@ package main
 import (
 	"container/ring"
 	a "riden/adapter"
+	wss "riden/websocketserver"
 	"time"
 )
 
@@ -368,8 +369,15 @@ func AdvanceSimFrames() {
 		case <-advance:
 			Logger.Info().Msg("Pushing sim frame to channel and advancing")
 			statuses := SimFrameRing.Value.([]a.BoatStatusAPIMessage)
-			for _, boatStatus := range statuses {
-				SimBoatStatusChannel <- boatStatus
+			for _, boatStatusAPI := range statuses {
+				boatStatus := a.BoatStatusMockLogicMessage{
+					APIMessage: boatStatusAPI,
+					Client: a.ClientData{
+						ConnName: wss.WSSServerAllClientsConnName,
+						ConnType: a.ConnectionTypeAll,
+					},
+				}
+				AdapterBoatStatusChannel <- boatStatus
 			}
 			SimFrameRing = SimFrameRing.Next()
 

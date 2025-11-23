@@ -43,7 +43,6 @@ func (c *Client) Initialize() {
 func (c *Client) CleanUpAfterReadLoop() {
 	Logger.Info().Msgf("Closed connection to remote address: %s", c.RemoteConnString())
 	// Send a close signal to write loop
-	c.Close <- 0
 	close(c.Close)
 	close(c.Write)
 	c.WSConn.Close()

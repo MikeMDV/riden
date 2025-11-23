@@ -38,7 +38,7 @@ type AdapterClient interface {
 	// The MockLogic(gRPC client) receives a Reserve request that an API client has sent
 	ReserveTrip(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[Empty, ReserveTripMessage], error)
 	// A bi-directional streaming RPC.
-	// The MockLogic(gRPC client) sends an Ackment that a previously sent
+	// The MockLogic(gRPC client) sends an Acknowledgement that a previously sent
 	// ReserveMessage is being handled
 	Ack(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[AckMessage, Empty], error)
 	// A bi-directional streaming RPC.
@@ -169,7 +169,7 @@ type AdapterServer interface {
 	// The MockLogic(gRPC client) receives a Reserve request that an API client has sent
 	ReserveTrip(grpc.BidiStreamingServer[Empty, ReserveTripMessage]) error
 	// A bi-directional streaming RPC.
-	// The MockLogic(gRPC client) sends an Ackment that a previously sent
+	// The MockLogic(gRPC client) sends an Acknowledgement that a previously sent
 	// ReserveMessage is being handled
 	Ack(grpc.BidiStreamingServer[AckMessage, Empty]) error
 	// A bi-directional streaming RPC.
