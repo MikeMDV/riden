@@ -23,9 +23,6 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-// Build Time variable
-var TestHost string
-
 // Common test parameters
 
 var testClientConnectionName string = "testClientConnName"
@@ -182,7 +179,7 @@ func SetUp() {
 }
 
 func TearDown() {
-	// Delete  any global data necessary for testing into the database here
+	// Delete any global data necessary for testing here
 
 }
 

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"container/list"
 	"container/ring"
 	a "riden/adapter"
 	wss "riden/websocketserver"
@@ -370,6 +371,9 @@ func AdvanceSimFrames() {
 			Logger.Info().Msg("Pushing sim frame to channel and advancing")
 			statuses := SimFrameRing.Value.([]a.BoatStatusAPIMessage)
 			for _, boatStatusAPI := range statuses {
+				// Store the boat status
+				SimFrameBoatStatusChannel <- boatStatusAPI
+				// Send the boat status to the Adapter
 				boatStatus := a.BoatStatusMockLogicMessage{
 					APIMessage: boatStatusAPI,
 					Client: a.ClientData{
@@ -381,11 +385,34 @@ func AdvanceSimFrames() {
 			}
 			SimFrameRing = SimFrameRing.Next()
 
-		case stopSignal := <-StopSimFrmaes:
+		case stopSignal := <-StopSimFrames:
 			Logger.Info().Msgf("AdvanceSimFrames has received a stop signal, %d",
 				stopSignal)
 			// handle close
 			return
 		}
 	}
+}
+
+// BuildDockAdjacencyList places the SimDocks in a []list.List containers.
+// This adjacency list stores the order of the docks that the boats
+// travel
+func BuildDockAdjacencyList() []*list.List {
+	docks := []a.Dock{SimDock1, SimDock2, SimDock3, SimDock4}
+	var adjacencyList []*list.List
+
+	for i, dock := range docks {
+		list := list.New()
+		_ = list.PushBack(dock)
+		if i < len(docks)-1 {
+			_ = list.PushBack(docks[i+1])
+		} else {
+			// This is the last dock in docks, so push the first
+			// dock onto the list
+			_ = list.PushBack(docks[0])
+		}
+		adjacencyList = append(adjacencyList, list)
+	}
+
+	return adjacencyList
 }

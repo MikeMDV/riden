@@ -1,6 +1,7 @@
 package main
 
 import (
+	"container/list"
 	"container/ring"
 	"context"
 	"flag"
@@ -22,11 +23,12 @@ import (
 var Logger zerolog.Logger
 
 var LogDirectory string
-var ParameterDirectory string
 
 // Simulation frame related
 var SimFrameRing *ring.Ring
-var StopSimFrmaes chan int
+var StopSimFrames chan int
+var SimFrameBoatStatusChannel chan a.BoatStatusAPIMessage
+var SimDockAdjacencyList []*list.List
 
 // gRPC related
 var GRPCDialTimer *time.Timer
@@ -41,6 +43,14 @@ var AdapterArrivedChannel chan a.ArrivedMockLogicMessage
 // that advances the frames
 func InitializeSimFrames() {
 	SimFrameRing = BuildSimFrameRing(SimFrames)
+
+	SimFrameBoatStatusChannel = make(chan a.BoatStatusAPIMessage, 2)
+
+	SimDockAdjacencyList = BuildDockAdjacencyList()
+
+	// TODO: Make Trip structure and ReservedTrips sync.Map [boatID]Trip to hold reserved trips and
+	// check if Arrived should be sent every time a new status is updated.
+	// Need to track AtDock, OnBoat, and OffBoat
 
 	go AdvanceSimFrames()
 }
@@ -58,12 +68,14 @@ func InitializeAdapterGRPCStreams() {
 		GRPCDialTimer.Stop()
 	}
 
+	// Make channels for incoming messages
 	AdapterAckChannel = make(chan a.AckMockLogicMessage)
 	AdapterBoatStatusChannel = make(chan a.BoatStatusMockLogicMessage, 2)
 	AdapterArrivedChannel = make(chan a.ArrivedMockLogicMessage)
 
 	client := pb.NewAdapterClient(conn)
 	ctx, cancel := context.WithCancel(context.Background())
+	// Make the wait channel and close function
 	GRPCStreamWaitChannel = make(chan struct{})
 	CloseWaitChan = func() {
 		close(GRPCStreamWaitChannel)
@@ -75,7 +87,10 @@ func InitializeAdapterGRPCStreams() {
 	go runAtDock(ctx, client)
 	go runOnBoat(ctx, client)
 	go runOffBoat(ctx, client)
+	go runBoatStatus(ctx, client)
+	go runArrived(ctx, client)
 
+	// Block until signaled
 	<-GRPCStreamWaitChannel
 	// One of the streams has failed, so cancel context, close connection
 	// and attempt to reconnect

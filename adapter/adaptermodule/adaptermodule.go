@@ -25,7 +25,6 @@ import (
 var Logger zerolog.Logger
 
 var LogDirectory string
-var ParameterDirectory string
 
 // WriteControlDeadline is a duration of time to be added to the time of the
 // WebSocket control message write operation

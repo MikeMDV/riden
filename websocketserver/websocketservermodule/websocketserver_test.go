@@ -19,9 +19,6 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-// Build Time variable
-var TestHost string
-
 // Common test parameters
 
 var testMessageBytes = []byte{78, 52, 40}
@@ -43,11 +40,11 @@ func SetUp() {
 		os.Exit(1)
 	}
 
-	// Insert any global data necessary for testing into the database here
+	// Insert any global data necessary for testing here
 }
 
 func TearDown() {
-	// Delete  any global data necessary for testing into the database here
+	// Delete any global data necessary for testing here
 
 }
 

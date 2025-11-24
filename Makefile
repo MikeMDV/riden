@@ -21,19 +21,26 @@ BUILDVERSION=Test
 
 all: build
 
-build: adapt websocket
+build: adapt mocklogicmodule websocket
 
 adapt:
 	cd adapter/adaptermodule && $(GOBUILD) -ldflags '-X riden/adapter/adapter.VersionNumber=$(BUILDVERSION) -X "riden/adapter/adapter.BuildDate=$(BUILDDATE)"' -o $(BIN_DIRECTORY)/Adapter
 
+mocklogicmodule:
+	cd mocklogic/mocklogicmodule && $(GOBUILD) -o $(BIN_DIRECTORY)/MockLogic
+
 websocket:
 	cd websocketserver/websocketservermodule && $(GOBUILD) -ldflags '-X riden/websocketserver/websocketserver.VersionNumber=$(BUILDVERSION) -X "riden/websocketserver/websocketserver.BuildDate=$(BUILDDATE)"' -o $(BIN_DIRECTORY)/WebSocketServer
 
-test: adapt_test websocket_test
+test: adapt_test mocklogicmodule_test websocket_test
 
 adapt_test:
 	# Adapter Test
 	cd adapter/adaptermodule && $(GOTEST) -v
+
+mocklogicmodule_test:
+	# MockLogic Test
+	cd mocklogic/mocklogicmodule && $(GOTEST) -v
 
 websocket_test:
 	# WebSocketServer Test
