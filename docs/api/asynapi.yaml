@@ -201,7 +201,7 @@ components:
     arrived:
       name: arrived
       title: Arrived
-      summary: Notifies the client that the reserved boat has arrived at the source dock and the gangway is open
+      summary: Notifies the client that the reserved boat has arrived at the source dock, or it has arrived at the destination dock, and the gangway is open
       payload:
         type: object
         properties:
@@ -228,7 +228,7 @@ components:
           $ref: '#/components/schemas/address'
         gangway:
           type: string
-          description: The ramp that will be used to board the boat
+          description: The ramp that will be used to board or disembark from the boat
           enum: [
             "fore",
             "aft"
