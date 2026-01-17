@@ -136,6 +136,7 @@ func ProcessMessageToMockLogic(mlMsg *MockLogicMessage) {
 func (s *adapterServer) ReserveTrip(stream pb.Adapter_ReserveTripServer) error {
 	var err error
 
+	streamDone := make(chan struct{})
 	// Launch a goroutine to receive the stream of Empty messages
 	// These are not expected to be received from the gRPC client and
 	// can be discarded.
@@ -144,59 +145,67 @@ func (s *adapterServer) ReserveTrip(stream pb.Adapter_ReserveTripServer) error {
 			_, err := stream.Recv()
 			if err == io.EOF {
 				// read done.
+				streamDone <- struct{}{}
 				return
 			}
 			if err != nil {
 				Logger.Debug().Msgf("Failed to receive an Empty message: %s", err.Error())
+				streamDone <- struct{}{}
+				return
 			}
 		}
 	}()
 
 	// Wait for messages to appear on the channel and send to the MockLogic
-	for reserveMockLogicMsg := range GRPCChans.ReserveTripChannel {
-		// Create gRPC ReserveMessage
-		apiMessage := pb.ReserveTripAPIMessage{
-			MessageType: reserveMockLogicMsg.APIMessage.MessageType,
-			AuthToken:   reserveMockLogicMsg.APIMessage.AuthToken,
-			ClientId:    reserveMockLogicMsg.APIMessage.ClientID,
-			SourceDock: &pb.Dock{
-				Address: &pb.Address{
-					Number: reserveMockLogicMsg.APIMessage.SourceDock.Address.Number,
-					Street: reserveMockLogicMsg.APIMessage.SourceDock.Address.Street,
+	for {
+		select {
+		case reserveMockLogicMsg := <-GRPCChans.ReserveTripChannel:
+			// Create gRPC ReserveMessage
+			apiMessage := pb.ReserveTripAPIMessage{
+				MessageType: reserveMockLogicMsg.APIMessage.MessageType,
+				AuthToken:   reserveMockLogicMsg.APIMessage.AuthToken,
+				ClientId:    reserveMockLogicMsg.APIMessage.ClientID,
+				SourceDock: &pb.Dock{
+					Address: &pb.Address{
+						Number: reserveMockLogicMsg.APIMessage.SourceDock.Address.Number,
+						Street: reserveMockLogicMsg.APIMessage.SourceDock.Address.Street,
+					},
+					Gangway: reserveMockLogicMsg.APIMessage.SourceDock.Gangway,
 				},
-				Gangway: reserveMockLogicMsg.APIMessage.SourceDock.Gangway,
-			},
-			DestinationDock: &pb.Dock{
-				Address: &pb.Address{
-					Number: reserveMockLogicMsg.APIMessage.DestinationDock.Address.Number,
-					Street: reserveMockLogicMsg.APIMessage.DestinationDock.Address.Street,
+				DestinationDock: &pb.Dock{
+					Address: &pb.Address{
+						Number: reserveMockLogicMsg.APIMessage.DestinationDock.Address.Number,
+						Street: reserveMockLogicMsg.APIMessage.DestinationDock.Address.Street,
+					},
+					Gangway: reserveMockLogicMsg.APIMessage.DestinationDock.Gangway,
 				},
-				Gangway: reserveMockLogicMsg.APIMessage.DestinationDock.Gangway,
-			},
-		}
-		clientData := pb.ClientData{
-			ConnName: reserveMockLogicMsg.Client.ConnName,
-			ConnType: reserveMockLogicMsg.Client.ConnType,
-		}
-		reserveTripMsg := pb.ReserveTripMessage{
-			ApiMessage: &apiMessage,
-			ClientData: &clientData,
-		}
+			}
+			clientData := pb.ClientData{
+				ConnName: reserveMockLogicMsg.Client.ConnName,
+				ConnType: reserveMockLogicMsg.Client.ConnType,
+			}
+			reserveTripMsg := pb.ReserveTripMessage{
+				ApiMessage: &apiMessage,
+				ClientData: &clientData,
+			}
 
-		// Send message to MockLogic
-		if err = stream.Send(&reserveTripMsg); err != nil {
-			Logger.Debug().Msgf("Failed to send a ReserveMessage: %s", err.Error())
+			// Send message to MockLogic
+			if err = stream.Send(&reserveTripMsg); err != nil {
+				Logger.Debug().Msgf("Failed to send a ReserveMessage: %s", err.Error())
+				return err
+			}
+
+		case <-streamDone:
 			return err
 		}
 	}
-
-	return err
 }
 
 // AtDock handles sending and receiving the bi-directional stream for AtDockMessage
 func (s *adapterServer) AtDock(stream pb.Adapter_AtDockServer) error {
 	var err error
 
+	streamDone := make(chan struct{})
 	// Launch a goroutine to receive the stream of Empty messages
 	// These are not expected to be received from the gRPC client and
 	// can be discarded.
@@ -205,55 +214,63 @@ func (s *adapterServer) AtDock(stream pb.Adapter_AtDockServer) error {
 			_, err := stream.Recv()
 			if err == io.EOF {
 				// read done.
+				streamDone <- struct{}{}
 				return
 			}
 			if err != nil {
 				Logger.Debug().Msgf("Failed to receive an Empty message : %v", err)
+				streamDone <- struct{}{}
+				return
 			}
 		}
 	}()
 
-	for atDockMockLogicMessage := range GRPCChans.AtDockChannel {
-		// Create gRPC AtDockMessage
-		apiMessage := pb.AtDockAPIMessage{
-			MessageType: atDockMockLogicMessage.APIMessage.MessageType,
-			ClientId:    atDockMockLogicMessage.APIMessage.ClientID,
-			Boat: &pb.Boat{
-				BoatId: atDockMockLogicMessage.APIMessage.Boat.BoatID,
-				Name:   atDockMockLogicMessage.APIMessage.Boat.Name,
-			},
-			Dock: &pb.Dock{
-				Address: &pb.Address{
-					Number: atDockMockLogicMessage.APIMessage.Dock.Address.Number,
-					Street: atDockMockLogicMessage.APIMessage.Dock.Address.Street,
+	for {
+		select {
+		case atDockMockLogicMessage := <-GRPCChans.AtDockChannel:
+			// Create gRPC AtDockMessage
+			apiMessage := pb.AtDockAPIMessage{
+				MessageType: atDockMockLogicMessage.APIMessage.MessageType,
+				ClientId:    atDockMockLogicMessage.APIMessage.ClientID,
+				Boat: &pb.Boat{
+					BoatId: atDockMockLogicMessage.APIMessage.Boat.BoatID,
+					Name:   atDockMockLogicMessage.APIMessage.Boat.Name,
 				},
-				Gangway: atDockMockLogicMessage.APIMessage.Dock.Gangway,
-			},
-			TransactionId: atDockMockLogicMessage.APIMessage.TransactionID,
-		}
-		clientData := pb.ClientData{
-			ConnName: atDockMockLogicMessage.Client.ConnName,
-			ConnType: atDockMockLogicMessage.Client.ConnType,
-		}
-		atDockMessage := pb.AtDockMessage{
-			ApiMessage: &apiMessage,
-			ClientData: &clientData,
-		}
+				Dock: &pb.Dock{
+					Address: &pb.Address{
+						Number: atDockMockLogicMessage.APIMessage.Dock.Address.Number,
+						Street: atDockMockLogicMessage.APIMessage.Dock.Address.Street,
+					},
+					Gangway: atDockMockLogicMessage.APIMessage.Dock.Gangway,
+				},
+				TransactionId: atDockMockLogicMessage.APIMessage.TransactionID,
+			}
+			clientData := pb.ClientData{
+				ConnName: atDockMockLogicMessage.Client.ConnName,
+				ConnType: atDockMockLogicMessage.Client.ConnType,
+			}
+			atDockMessage := pb.AtDockMessage{
+				ApiMessage: &apiMessage,
+				ClientData: &clientData,
+			}
 
-		// Send message to MockLogic
-		if err = stream.Send(&atDockMessage); err != nil {
-			Logger.Debug().Msgf("Failed to send an AtDockMessage: %v", err)
+			// Send message to MockLogic
+			if err = stream.Send(&atDockMessage); err != nil {
+				Logger.Debug().Msgf("Failed to send an AtDockMessage: %v", err)
+				return err
+			}
+
+		case <-streamDone:
 			return err
 		}
 	}
-
-	return err
 }
 
 // OnBoat handles sending and receiving the bi-directional stream for OnBoatMessage
 func (s *adapterServer) OnBoat(stream pb.Adapter_OnBoatServer) error {
 	var err error
 
+	streamDone := make(chan struct{})
 	// Launch a goroutine to receive the stream of Empty messages
 	// These are not expected to be received from the gRPC client and
 	// can be discarded
@@ -262,48 +279,56 @@ func (s *adapterServer) OnBoat(stream pb.Adapter_OnBoatServer) error {
 			_, err := stream.Recv()
 			if err == io.EOF {
 				// read done.
+				streamDone <- struct{}{}
 				return
 			}
 			if err != nil {
 				Logger.Debug().Msgf("Failed to receive an Empty message : %v", err)
+				streamDone <- struct{}{}
+				return
 			}
 		}
 	}()
 
-	for onBoatMockLogicMessage := range GRPCChans.OnBoatChannel {
-		// Create gRPC OnBoatMessage
-		apiMessage := pb.OnBoatAPIMessage{
-			MessageType: onBoatMockLogicMessage.APIMessage.MessageType,
-			ClientId:    onBoatMockLogicMessage.APIMessage.ClientID,
-			Boat: &pb.Boat{
-				BoatId: onBoatMockLogicMessage.APIMessage.Boat.BoatID,
-				Name:   onBoatMockLogicMessage.APIMessage.Boat.Name,
-			},
-			TransactionId: onBoatMockLogicMessage.APIMessage.TransactionID,
-		}
-		clientData := pb.ClientData{
-			ConnName: onBoatMockLogicMessage.Client.ConnName,
-			ConnType: onBoatMockLogicMessage.Client.ConnType,
-		}
-		onBoatMessage := pb.OnBoatMessage{
-			ApiMessage: &apiMessage,
-			ClientData: &clientData,
-		}
+	for {
+		select {
+		case onBoatMockLogicMessage := <-GRPCChans.OnBoatChannel:
+			// Create gRPC OnBoatMessage
+			apiMessage := pb.OnBoatAPIMessage{
+				MessageType: onBoatMockLogicMessage.APIMessage.MessageType,
+				ClientId:    onBoatMockLogicMessage.APIMessage.ClientID,
+				Boat: &pb.Boat{
+					BoatId: onBoatMockLogicMessage.APIMessage.Boat.BoatID,
+					Name:   onBoatMockLogicMessage.APIMessage.Boat.Name,
+				},
+				TransactionId: onBoatMockLogicMessage.APIMessage.TransactionID,
+			}
+			clientData := pb.ClientData{
+				ConnName: onBoatMockLogicMessage.Client.ConnName,
+				ConnType: onBoatMockLogicMessage.Client.ConnType,
+			}
+			onBoatMessage := pb.OnBoatMessage{
+				ApiMessage: &apiMessage,
+				ClientData: &clientData,
+			}
 
-		// Send message to MockLogic
-		if err = stream.Send(&onBoatMessage); err != nil {
-			Logger.Debug().Msgf("Failed to send an OnBoatMessage: %v", err)
+			// Send message to MockLogic
+			if err = stream.Send(&onBoatMessage); err != nil {
+				Logger.Debug().Msgf("Failed to send an OnBoatMessage: %v", err)
+				return err
+			}
+
+		case <-streamDone:
 			return err
 		}
 	}
-
-	return err
 }
 
 // OffBoat handles sending and receiving the bi-directional stream for OffBoatMessage
 func (s *adapterServer) OffBoat(stream pb.Adapter_OffBoatServer) error {
 	var err error
 
+	streamDone := make(chan struct{})
 	// Launch a goroutine to receive the stream of Empty messages
 	// These are not expected to be received from the gRPC client and
 	// can be discarded
@@ -312,42 +337,49 @@ func (s *adapterServer) OffBoat(stream pb.Adapter_OffBoatServer) error {
 			_, err := stream.Recv()
 			if err == io.EOF {
 				// read done.
+				streamDone <- struct{}{}
 				return
 			}
 			if err != nil {
 				Logger.Debug().Msgf("Failed to receive an Empty message : %v", err)
+				streamDone <- struct{}{}
+				return
 			}
 		}
 	}()
 
-	for offBoatMockLogicMessage := range GRPCChans.OffBoatChannel {
-		// Create gRPC OffBoatMessage
-		apiMessage := pb.OffBoatAPIMessage{
-			MessageType: offBoatMockLogicMessage.APIMessage.MessageType,
-			ClientId:    offBoatMockLogicMessage.APIMessage.ClientID,
-			Boat: &pb.Boat{
-				BoatId: offBoatMockLogicMessage.APIMessage.Boat.BoatID,
-				Name:   offBoatMockLogicMessage.APIMessage.Boat.Name,
-			},
-			TransactionId: offBoatMockLogicMessage.APIMessage.TransactionID,
-		}
-		clientData := pb.ClientData{
-			ConnName: offBoatMockLogicMessage.Client.ConnName,
-			ConnType: offBoatMockLogicMessage.Client.ConnType,
-		}
-		offBoatMessage := pb.OffBoatMessage{
-			ApiMessage: &apiMessage,
-			ClientData: &clientData,
-		}
+	for {
+		select {
+		case offBoatMockLogicMessage := <-GRPCChans.OffBoatChannel:
+			// Create gRPC OffBoatMessage
+			apiMessage := pb.OffBoatAPIMessage{
+				MessageType: offBoatMockLogicMessage.APIMessage.MessageType,
+				ClientId:    offBoatMockLogicMessage.APIMessage.ClientID,
+				Boat: &pb.Boat{
+					BoatId: offBoatMockLogicMessage.APIMessage.Boat.BoatID,
+					Name:   offBoatMockLogicMessage.APIMessage.Boat.Name,
+				},
+				TransactionId: offBoatMockLogicMessage.APIMessage.TransactionID,
+			}
+			clientData := pb.ClientData{
+				ConnName: offBoatMockLogicMessage.Client.ConnName,
+				ConnType: offBoatMockLogicMessage.Client.ConnType,
+			}
+			offBoatMessage := pb.OffBoatMessage{
+				ApiMessage: &apiMessage,
+				ClientData: &clientData,
+			}
 
-		// Send message to MockLogic
-		if err = stream.Send(&offBoatMessage); err != nil {
-			Logger.Debug().Msgf("Failed to send an OffBoatMessage: %v", err)
+			// Send message to MockLogic
+			if err = stream.Send(&offBoatMessage); err != nil {
+				Logger.Debug().Msgf("Failed to send an OffBoatMessage: %v", err)
+				return err
+			}
+
+		case <-streamDone:
 			return err
 		}
 	}
-
-	return err
 }
 
 // Ack handles sending and receiving the bi-directional stream for AckMessage
