@@ -262,6 +262,7 @@ func main() {
 	Logger.Info().Msgf("WebSocketServer Version: %s Build Date: %s",
 		wss.VersionNumber, wss.BuildDate)
 	Logger.Info().Msg("Starting websocket server...")
+	Logger.Info().Msgf("Listening at %s:%s", flag.Arg(2), flag.Arg(3))
 	err = http.ListenAndServe(fmt.Sprintf("%s:%s", flag.Arg(2), flag.Arg(3)), nil)
 	Logger.Info().Msgf("ListenAndServe returned: %s", err.Error())
 }
