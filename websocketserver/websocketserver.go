@@ -7,7 +7,7 @@ var VersionNumber string
 var BuildDate string
 
 var WSServerHost string = "localhost"
-var WSServerPort string = "8080"
+var WSServerPort string = "8081"
 var WSServerAdapterPath string = "/api/v1/adapter"
 var WSServerClientPath string = "/api/v1/riden"
 

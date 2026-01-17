@@ -236,36 +236,38 @@ func runAck(ctx context.Context, client pb.AdapterClient) {
 		Once.Do(CloseWaitChan)
 	}
 
-	select {
-	case <-ctx.Done():
-		Logger.Warn().Msgf("client.Ack context canceled with err: %s", ctx.Err().Error())
-		return
-
-	case ack := <-AdapterAckChannel:
-		ackBoatGRPC := pb.Boat{
-			BoatId: ack.APIMessage.Boat.BoatID,
-			Name:   ack.APIMessage.Boat.Name,
-		}
-		ackAPIMessageGRPC := pb.AckAPIMessage{
-			MessageType:   ack.APIMessage.MessageType,
-			ClientId:      ack.APIMessage.ClientID,
-			IsReserved:    ack.APIMessage.IsReserved,
-			Boat:          &ackBoatGRPC,
-			TransactionId: ack.APIMessage.TransactionID,
-		}
-		ackClientDataGRPC := pb.ClientData{
-			ConnName: ack.Client.ConnName,
-			ConnType: ack.Client.ConnType,
-		}
-		ackMessageGRPC := pb.AckMessage{
-			ApiMessage: &ackAPIMessageGRPC,
-			ClientData: &ackClientDataGRPC,
-		}
-
-		if err := stream.Send(&ackMessageGRPC); err != nil {
-			Logger.Error().Msgf("client.Ack failed to send msg: %s", err.Error())
-			Once.Do(CloseWaitChan)
+	for {
+		select {
+		case <-ctx.Done():
+			Logger.Warn().Msgf("client.Ack context canceled with err: %s", ctx.Err().Error())
 			return
+
+		case ack := <-AdapterAckChannel:
+			ackBoatGRPC := pb.Boat{
+				BoatId: ack.APIMessage.Boat.BoatID,
+				Name:   ack.APIMessage.Boat.Name,
+			}
+			ackAPIMessageGRPC := pb.AckAPIMessage{
+				MessageType:   ack.APIMessage.MessageType,
+				ClientId:      ack.APIMessage.ClientID,
+				IsReserved:    ack.APIMessage.IsReserved,
+				Boat:          &ackBoatGRPC,
+				TransactionId: ack.APIMessage.TransactionID,
+			}
+			ackClientDataGRPC := pb.ClientData{
+				ConnName: ack.Client.ConnName,
+				ConnType: ack.Client.ConnType,
+			}
+			ackMessageGRPC := pb.AckMessage{
+				ApiMessage: &ackAPIMessageGRPC,
+				ClientData: &ackClientDataGRPC,
+			}
+
+			if err := stream.Send(&ackMessageGRPC); err != nil {
+				Logger.Error().Msgf("client.Ack failed to send msg: %s", err.Error())
+				Once.Do(CloseWaitChan)
+				return
+			}
 		}
 	}
 }
@@ -282,61 +284,63 @@ func runBoatStatus(ctx context.Context, client pb.AdapterClient) {
 		Once.Do(CloseWaitChan)
 	}
 
-	select {
-	case <-ctx.Done():
-		Logger.Warn().Msgf("client.BoatStatus context canceled with err: %s", ctx.Err().Error())
-		return
-
-	case status := <-AdapterBoatStatusChannel:
-		statusBoatGRPC := pb.Boat{
-			BoatId: status.APIMessage.Boat.BoatID,
-			Name:   status.APIMessage.Boat.Name,
-		}
-		statusPrevDockAddress := pb.Address{
-			Number: status.APIMessage.PreviousDock.Address.Number,
-			Street: status.APIMessage.PreviousDock.Address.Street,
-		}
-		statusPrevDock := pb.Dock{
-			Address: &statusPrevDockAddress,
-			Gangway: status.APIMessage.PreviousDock.Gangway,
-		}
-		statusCurrDockAddress := pb.Address{
-			Number: status.APIMessage.CurrentDock.Address.Number,
-			Street: status.APIMessage.CurrentDock.Address.Street,
-		}
-		statusCurrDock := pb.Dock{
-			Address: &statusCurrDockAddress,
-			Gangway: status.APIMessage.CurrentDock.Gangway,
-		}
-		statusNextDockAddress := pb.Address{
-			Number: status.APIMessage.NextDock.Address.Number,
-			Street: status.APIMessage.NextDock.Address.Street,
-		}
-		statusNextDock := pb.Dock{
-			Address: &statusNextDockAddress,
-			Gangway: status.APIMessage.NextDock.Gangway,
-		}
-		statusAPIMessageGRPC := pb.BoatStatusAPIMessage{
-			MessageType:  status.APIMessage.MessageType,
-			Boat:         &statusBoatGRPC,
-			ServiceState: pb.ServiceState(status.APIMessage.ServiceState),
-			PreviousDock: &statusPrevDock,
-			CurrentDock:  &statusCurrDock,
-			NextDock:     &statusNextDock,
-		}
-		statusClientDataGRPC := pb.ClientData{
-			ConnName: status.Client.ConnName,
-			ConnType: status.Client.ConnType,
-		}
-		statusMessageGRPC := pb.BoatStatusMessage{
-			ApiMessage: &statusAPIMessageGRPC,
-			ClientData: &statusClientDataGRPC,
-		}
-
-		if err := stream.Send(&statusMessageGRPC); err != nil {
-			Logger.Error().Msgf("client.BoatStatus failed to send msg: %s", err.Error())
-			Once.Do(CloseWaitChan)
+	for {
+		select {
+		case <-ctx.Done():
+			Logger.Warn().Msgf("client.BoatStatus context canceled with err: %s", ctx.Err().Error())
 			return
+
+		case status := <-AdapterBoatStatusChannel:
+			statusBoatGRPC := pb.Boat{
+				BoatId: status.APIMessage.Boat.BoatID,
+				Name:   status.APIMessage.Boat.Name,
+			}
+			statusPrevDockAddress := pb.Address{
+				Number: status.APIMessage.PreviousDock.Address.Number,
+				Street: status.APIMessage.PreviousDock.Address.Street,
+			}
+			statusPrevDock := pb.Dock{
+				Address: &statusPrevDockAddress,
+				Gangway: status.APIMessage.PreviousDock.Gangway,
+			}
+			statusCurrDockAddress := pb.Address{
+				Number: status.APIMessage.CurrentDock.Address.Number,
+				Street: status.APIMessage.CurrentDock.Address.Street,
+			}
+			statusCurrDock := pb.Dock{
+				Address: &statusCurrDockAddress,
+				Gangway: status.APIMessage.CurrentDock.Gangway,
+			}
+			statusNextDockAddress := pb.Address{
+				Number: status.APIMessage.NextDock.Address.Number,
+				Street: status.APIMessage.NextDock.Address.Street,
+			}
+			statusNextDock := pb.Dock{
+				Address: &statusNextDockAddress,
+				Gangway: status.APIMessage.NextDock.Gangway,
+			}
+			statusAPIMessageGRPC := pb.BoatStatusAPIMessage{
+				MessageType:  status.APIMessage.MessageType,
+				Boat:         &statusBoatGRPC,
+				ServiceState: pb.ServiceState(status.APIMessage.ServiceState),
+				PreviousDock: &statusPrevDock,
+				CurrentDock:  &statusCurrDock,
+				NextDock:     &statusNextDock,
+			}
+			statusClientDataGRPC := pb.ClientData{
+				ConnName: status.Client.ConnName,
+				ConnType: status.Client.ConnType,
+			}
+			statusMessageGRPC := pb.BoatStatusMessage{
+				ApiMessage: &statusAPIMessageGRPC,
+				ClientData: &statusClientDataGRPC,
+			}
+
+			if err := stream.Send(&statusMessageGRPC); err != nil {
+				Logger.Error().Msgf("client.BoatStatus failed to send msg: %s", err.Error())
+				Once.Do(CloseWaitChan)
+				return
+			}
 		}
 	}
 }
@@ -353,44 +357,46 @@ func runArrived(ctx context.Context, client pb.AdapterClient) {
 		Once.Do(CloseWaitChan)
 	}
 
-	select {
-	case <-ctx.Done():
-		Logger.Warn().Msgf("client.Arrived context canceled with err: %s", ctx.Err().Error())
-		return
-
-	case arr := <-AdapterArrivedChannel:
-		arrBoatGRPC := pb.Boat{
-			BoatId: arr.APIMessage.Boat.BoatID,
-			Name:   arr.APIMessage.Boat.Name,
-		}
-		arrDockAddress := pb.Address{
-			Number: arr.APIMessage.Dock.Address.Number,
-			Street: arr.APIMessage.Dock.Address.Street,
-		}
-		arrDock := pb.Dock{
-			Address: &arrDockAddress,
-			Gangway: arr.APIMessage.Dock.Gangway,
-		}
-		arrAPIMessageGRPC := pb.ArrivedAPIMessage{
-			MessageType:   arr.APIMessage.MessageType,
-			ClientId:      arr.APIMessage.ClientID,
-			Boat:          &arrBoatGRPC,
-			Dock:          &arrDock,
-			TransactionId: arr.APIMessage.TransactionID,
-		}
-		arrClientDataGRPC := pb.ClientData{
-			ConnName: arr.Client.ConnName,
-			ConnType: arr.Client.ConnType,
-		}
-		arrMessageGRPC := pb.ArrivedMessage{
-			ApiMessage: &arrAPIMessageGRPC,
-			ClientData: &arrClientDataGRPC,
-		}
-
-		if err := stream.Send(&arrMessageGRPC); err != nil {
-			Logger.Error().Msgf("client.Arrived failed to send msg: %s", err.Error())
-			Once.Do(CloseWaitChan)
+	for {
+		select {
+		case <-ctx.Done():
+			Logger.Warn().Msgf("client.Arrived context canceled with err: %s", ctx.Err().Error())
 			return
+
+		case arr := <-AdapterArrivedChannel:
+			arrBoatGRPC := pb.Boat{
+				BoatId: arr.APIMessage.Boat.BoatID,
+				Name:   arr.APIMessage.Boat.Name,
+			}
+			arrDockAddress := pb.Address{
+				Number: arr.APIMessage.Dock.Address.Number,
+				Street: arr.APIMessage.Dock.Address.Street,
+			}
+			arrDock := pb.Dock{
+				Address: &arrDockAddress,
+				Gangway: arr.APIMessage.Dock.Gangway,
+			}
+			arrAPIMessageGRPC := pb.ArrivedAPIMessage{
+				MessageType:   arr.APIMessage.MessageType,
+				ClientId:      arr.APIMessage.ClientID,
+				Boat:          &arrBoatGRPC,
+				Dock:          &arrDock,
+				TransactionId: arr.APIMessage.TransactionID,
+			}
+			arrClientDataGRPC := pb.ClientData{
+				ConnName: arr.Client.ConnName,
+				ConnType: arr.Client.ConnType,
+			}
+			arrMessageGRPC := pb.ArrivedMessage{
+				ApiMessage: &arrAPIMessageGRPC,
+				ClientData: &arrClientDataGRPC,
+			}
+
+			if err := stream.Send(&arrMessageGRPC); err != nil {
+				Logger.Error().Msgf("client.Arrived failed to send msg: %s", err.Error())
+				Once.Do(CloseWaitChan)
+				return
+			}
 		}
 	}
 }
