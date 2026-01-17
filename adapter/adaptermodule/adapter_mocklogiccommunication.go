@@ -158,7 +158,7 @@ func (s *adapterServer) ReserveTrip(stream pb.Adapter_ReserveTripServer) error {
 		apiMessage := pb.ReserveTripAPIMessage{
 			MessageType: reserveMockLogicMsg.APIMessage.MessageType,
 			AuthToken:   reserveMockLogicMsg.APIMessage.AuthToken,
-			ClientID:    reserveMockLogicMsg.APIMessage.ClientID,
+			ClientId:    reserveMockLogicMsg.APIMessage.ClientID,
 			SourceDock: &pb.Dock{
 				Address: &pb.Address{
 					Number: reserveMockLogicMsg.APIMessage.SourceDock.Address.Number,
@@ -179,7 +179,7 @@ func (s *adapterServer) ReserveTrip(stream pb.Adapter_ReserveTripServer) error {
 			ConnType: reserveMockLogicMsg.Client.ConnType,
 		}
 		reserveTripMsg := pb.ReserveTripMessage{
-			APIMessage: &apiMessage,
+			ApiMessage: &apiMessage,
 			ClientData: &clientData,
 		}
 
@@ -217,9 +217,9 @@ func (s *adapterServer) AtDock(stream pb.Adapter_AtDockServer) error {
 		// Create gRPC AtDockMessage
 		apiMessage := pb.AtDockAPIMessage{
 			MessageType: atDockMockLogicMessage.APIMessage.MessageType,
-			ClientID:    atDockMockLogicMessage.APIMessage.ClientID,
+			ClientId:    atDockMockLogicMessage.APIMessage.ClientID,
 			Boat: &pb.Boat{
-				BoatID: atDockMockLogicMessage.APIMessage.Boat.BoatID,
+				BoatId: atDockMockLogicMessage.APIMessage.Boat.BoatID,
 				Name:   atDockMockLogicMessage.APIMessage.Boat.Name,
 			},
 			Dock: &pb.Dock{
@@ -229,14 +229,14 @@ func (s *adapterServer) AtDock(stream pb.Adapter_AtDockServer) error {
 				},
 				Gangway: atDockMockLogicMessage.APIMessage.Dock.Gangway,
 			},
-			TransactionID: atDockMockLogicMessage.APIMessage.TransactionID,
+			TransactionId: atDockMockLogicMessage.APIMessage.TransactionID,
 		}
 		clientData := pb.ClientData{
 			ConnName: atDockMockLogicMessage.Client.ConnName,
 			ConnType: atDockMockLogicMessage.Client.ConnType,
 		}
 		atDockMessage := pb.AtDockMessage{
-			APIMessage: &apiMessage,
+			ApiMessage: &apiMessage,
 			ClientData: &clientData,
 		}
 
@@ -274,19 +274,19 @@ func (s *adapterServer) OnBoat(stream pb.Adapter_OnBoatServer) error {
 		// Create gRPC OnBoatMessage
 		apiMessage := pb.OnBoatAPIMessage{
 			MessageType: onBoatMockLogicMessage.APIMessage.MessageType,
-			ClientID:    onBoatMockLogicMessage.APIMessage.ClientID,
+			ClientId:    onBoatMockLogicMessage.APIMessage.ClientID,
 			Boat: &pb.Boat{
-				BoatID: onBoatMockLogicMessage.APIMessage.Boat.BoatID,
+				BoatId: onBoatMockLogicMessage.APIMessage.Boat.BoatID,
 				Name:   onBoatMockLogicMessage.APIMessage.Boat.Name,
 			},
-			TransactionID: onBoatMockLogicMessage.APIMessage.TransactionID,
+			TransactionId: onBoatMockLogicMessage.APIMessage.TransactionID,
 		}
 		clientData := pb.ClientData{
 			ConnName: onBoatMockLogicMessage.Client.ConnName,
 			ConnType: onBoatMockLogicMessage.Client.ConnType,
 		}
 		onBoatMessage := pb.OnBoatMessage{
-			APIMessage: &apiMessage,
+			ApiMessage: &apiMessage,
 			ClientData: &clientData,
 		}
 
@@ -324,19 +324,19 @@ func (s *adapterServer) OffBoat(stream pb.Adapter_OffBoatServer) error {
 		// Create gRPC OffBoatMessage
 		apiMessage := pb.OffBoatAPIMessage{
 			MessageType: offBoatMockLogicMessage.APIMessage.MessageType,
-			ClientID:    offBoatMockLogicMessage.APIMessage.ClientID,
+			ClientId:    offBoatMockLogicMessage.APIMessage.ClientID,
 			Boat: &pb.Boat{
-				BoatID: offBoatMockLogicMessage.APIMessage.Boat.BoatID,
+				BoatId: offBoatMockLogicMessage.APIMessage.Boat.BoatID,
 				Name:   offBoatMockLogicMessage.APIMessage.Boat.Name,
 			},
-			TransactionID: offBoatMockLogicMessage.APIMessage.TransactionID,
+			TransactionId: offBoatMockLogicMessage.APIMessage.TransactionID,
 		}
 		clientData := pb.ClientData{
 			ConnName: offBoatMockLogicMessage.Client.ConnName,
 			ConnType: offBoatMockLogicMessage.Client.ConnType,
 		}
 		offBoatMessage := pb.OffBoatMessage{
-			APIMessage: &apiMessage,
+			ApiMessage: &apiMessage,
 			ClientData: &clientData,
 		}
 
@@ -366,13 +366,13 @@ func (s *adapterServer) Ack(stream pb.Adapter_AckServer) error {
 		}
 
 		// Convert pb.AckMessage to MockLogicMessage message
-		boat := a.NewBoat(in.APIMessage.Boat.BoatID, in.APIMessage.Boat.Name)
-		ackAPIMsg := a.NewAckAPIMessage(a.APIMessageTypeAck, in.APIMessage.ClientID,
-			in.APIMessage.IsReserved, boat, in.APIMessage.TransactionID)
+		boat := a.NewBoat(in.ApiMessage.Boat.BoatId, in.ApiMessage.Boat.Name)
+		ackAPIMsg := a.NewAckAPIMessage(a.APIMessageTypeAck, in.ApiMessage.ClientId,
+			in.ApiMessage.IsReserved, boat, in.ApiMessage.TransactionId)
 		apiMsgBytes, err := json.Marshal(ackAPIMsg)
 		if err != nil {
 			Logger.Debug().Msgf("Error marshaling %s message received from MockLogic: %s",
-				in.APIMessage.MessageType, err.Error())
+				in.ApiMessage.MessageType, err.Error())
 			continue
 		}
 		mlMsg := NewMockLogicMessage(in.ClientData.ConnName, in.ClientData.ConnType,
@@ -398,22 +398,22 @@ func (s *adapterServer) BoatStatus(stream pb.Adapter_BoatStatusServer) error {
 		}
 
 		// Convert pb.BoatStatusMessage to MockLogicMessage message
-		boat := a.NewBoat(in.APIMessage.Boat.BoatID, in.APIMessage.Boat.Name)
-		previousDockAddress := a.NewAddress(in.APIMessage.PreviousDock.Address.Number,
-			in.APIMessage.PreviousDock.Address.Street)
-		previousDock := a.NewDock(previousDockAddress, in.APIMessage.PreviousDock.Gangway)
-		currentDockAddress := a.NewAddress(in.APIMessage.CurrentDock.Address.Number,
-			in.APIMessage.CurrentDock.Address.Street)
-		currentDock := a.NewDock(currentDockAddress, in.APIMessage.CurrentDock.Gangway)
-		nextDockAddress := a.NewAddress(in.APIMessage.NextDock.Address.Number,
-			in.APIMessage.NextDock.Address.Street)
-		nextDock := a.NewDock(nextDockAddress, in.APIMessage.NextDock.Gangway)
+		boat := a.NewBoat(in.ApiMessage.Boat.BoatId, in.ApiMessage.Boat.Name)
+		previousDockAddress := a.NewAddress(in.ApiMessage.PreviousDock.Address.Number,
+			in.ApiMessage.PreviousDock.Address.Street)
+		previousDock := a.NewDock(previousDockAddress, in.ApiMessage.PreviousDock.Gangway)
+		currentDockAddress := a.NewAddress(in.ApiMessage.CurrentDock.Address.Number,
+			in.ApiMessage.CurrentDock.Address.Street)
+		currentDock := a.NewDock(currentDockAddress, in.ApiMessage.CurrentDock.Gangway)
+		nextDockAddress := a.NewAddress(in.ApiMessage.NextDock.Address.Number,
+			in.ApiMessage.NextDock.Address.Street)
+		nextDock := a.NewDock(nextDockAddress, in.ApiMessage.NextDock.Gangway)
 		boatStatusAPIMsg := a.NewBoatStatusAPIMessage(a.APIMessageTypeBoatStatus, boat,
-			int32(in.APIMessage.ServiceState), previousDock, currentDock, nextDock)
+			int32(in.ApiMessage.ServiceState), previousDock, currentDock, nextDock)
 		apiMsgBytes, err := json.Marshal(boatStatusAPIMsg)
 		if err != nil {
 			Logger.Debug().Msgf("Error marshaling %s message received from MockLogic: %s",
-				in.APIMessage.MessageType, err.Error())
+				in.ApiMessage.MessageType, err.Error())
 			continue
 		}
 		mlMsg := NewMockLogicMessage(in.ClientData.ConnName, a.ConnectionTypeAll,
@@ -439,15 +439,15 @@ func (s *adapterServer) Arrived(stream pb.Adapter_ArrivedServer) error {
 		}
 
 		// Convert pb.ArrivedMessage to MockLogicMessage message
-		boat := a.NewBoat(in.APIMessage.Boat.BoatID, in.APIMessage.Boat.Name)
-		address := a.NewAddress(in.APIMessage.Dock.Address.Number, in.APIMessage.Dock.Address.Street)
-		dock := a.NewDock(address, in.APIMessage.Dock.Gangway)
-		arrivedAPIMsg := a.NewArrivedAPIMessage(a.APIMessageTypeArrived, in.APIMessage.ClientID,
-			boat, dock, in.APIMessage.TransactionID)
+		boat := a.NewBoat(in.ApiMessage.Boat.BoatId, in.ApiMessage.Boat.Name)
+		address := a.NewAddress(in.ApiMessage.Dock.Address.Number, in.ApiMessage.Dock.Address.Street)
+		dock := a.NewDock(address, in.ApiMessage.Dock.Gangway)
+		arrivedAPIMsg := a.NewArrivedAPIMessage(a.APIMessageTypeArrived, in.ApiMessage.ClientId,
+			boat, dock, in.ApiMessage.TransactionId)
 		apiMsgBytes, err := json.Marshal(arrivedAPIMsg)
 		if err != nil {
 			Logger.Debug().Msgf("Error marshaling %s message received from MockLogic: %s",
-				in.APIMessage.MessageType, err.Error())
+				in.ApiMessage.MessageType, err.Error())
 			continue
 		}
 		mlMsg := NewMockLogicMessage(in.ClientData.ConnName, in.ClientData.ConnType,

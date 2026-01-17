@@ -243,22 +243,22 @@ func runAck(ctx context.Context, client pb.AdapterClient) {
 
 	case ack := <-AdapterAckChannel:
 		ackBoatGRPC := pb.Boat{
-			BoatID: ack.APIMessage.Boat.BoatID,
+			BoatId: ack.APIMessage.Boat.BoatID,
 			Name:   ack.APIMessage.Boat.Name,
 		}
 		ackAPIMessageGRPC := pb.AckAPIMessage{
 			MessageType:   ack.APIMessage.MessageType,
-			ClientID:      ack.APIMessage.ClientID,
+			ClientId:      ack.APIMessage.ClientID,
 			IsReserved:    ack.APIMessage.IsReserved,
 			Boat:          &ackBoatGRPC,
-			TransactionID: ack.APIMessage.TransactionID,
+			TransactionId: ack.APIMessage.TransactionID,
 		}
 		ackClientDataGRPC := pb.ClientData{
 			ConnName: ack.Client.ConnName,
 			ConnType: ack.Client.ConnType,
 		}
 		ackMessageGRPC := pb.AckMessage{
-			APIMessage: &ackAPIMessageGRPC,
+			ApiMessage: &ackAPIMessageGRPC,
 			ClientData: &ackClientDataGRPC,
 		}
 
@@ -289,7 +289,7 @@ func runBoatStatus(ctx context.Context, client pb.AdapterClient) {
 
 	case status := <-AdapterBoatStatusChannel:
 		statusBoatGRPC := pb.Boat{
-			BoatID: status.APIMessage.Boat.BoatID,
+			BoatId: status.APIMessage.Boat.BoatID,
 			Name:   status.APIMessage.Boat.Name,
 		}
 		statusPrevDockAddress := pb.Address{
@@ -329,7 +329,7 @@ func runBoatStatus(ctx context.Context, client pb.AdapterClient) {
 			ConnType: status.Client.ConnType,
 		}
 		statusMessageGRPC := pb.BoatStatusMessage{
-			APIMessage: &statusAPIMessageGRPC,
+			ApiMessage: &statusAPIMessageGRPC,
 			ClientData: &statusClientDataGRPC,
 		}
 
@@ -360,7 +360,7 @@ func runArrived(ctx context.Context, client pb.AdapterClient) {
 
 	case arr := <-AdapterArrivedChannel:
 		arrBoatGRPC := pb.Boat{
-			BoatID: arr.APIMessage.Boat.BoatID,
+			BoatId: arr.APIMessage.Boat.BoatID,
 			Name:   arr.APIMessage.Boat.Name,
 		}
 		arrDockAddress := pb.Address{
@@ -373,17 +373,17 @@ func runArrived(ctx context.Context, client pb.AdapterClient) {
 		}
 		arrAPIMessageGRPC := pb.ArrivedAPIMessage{
 			MessageType:   arr.APIMessage.MessageType,
-			ClientID:      arr.APIMessage.ClientID,
+			ClientId:      arr.APIMessage.ClientID,
 			Boat:          &arrBoatGRPC,
 			Dock:          &arrDock,
-			TransactionID: arr.APIMessage.TransactionID,
+			TransactionId: arr.APIMessage.TransactionID,
 		}
 		arrClientDataGRPC := pb.ClientData{
 			ConnName: arr.Client.ConnName,
 			ConnType: arr.Client.ConnType,
 		}
 		arrMessageGRPC := pb.ArrivedMessage{
-			APIMessage: &arrAPIMessageGRPC,
+			ApiMessage: &arrAPIMessageGRPC,
 			ClientData: &arrClientDataGRPC,
 		}
 

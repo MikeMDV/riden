@@ -767,17 +767,17 @@ func TestSendingMessageToMockLogicWithGRPC(t *testing.T) {
 
 		Logger.Info().Msgf("Message appeared on gRPCChannel: %+v", recdReserveGRPCMsg)
 
-		recdSourceDockAddress := a.NewAddress(recdReserveGRPCMsg.APIMessage.SourceDock.Address.Number,
-			recdReserveGRPCMsg.APIMessage.SourceDock.Address.Street)
+		recdSourceDockAddress := a.NewAddress(recdReserveGRPCMsg.ApiMessage.SourceDock.Address.Number,
+			recdReserveGRPCMsg.ApiMessage.SourceDock.Address.Street)
 		recdSourceDock := a.NewDock(recdSourceDockAddress,
-			recdReserveGRPCMsg.APIMessage.SourceDock.Gangway)
-		recdDestDockAddress := a.NewAddress(recdReserveGRPCMsg.APIMessage.DestinationDock.Address.Number,
-			recdReserveGRPCMsg.APIMessage.DestinationDock.Address.Street)
+			recdReserveGRPCMsg.ApiMessage.SourceDock.Gangway)
+		recdDestDockAddress := a.NewAddress(recdReserveGRPCMsg.ApiMessage.DestinationDock.Address.Number,
+			recdReserveGRPCMsg.ApiMessage.DestinationDock.Address.Street)
 		recdDestDock := a.NewDock(recdDestDockAddress,
-			recdReserveGRPCMsg.APIMessage.DestinationDock.Gangway)
+			recdReserveGRPCMsg.ApiMessage.DestinationDock.Gangway)
 
-		recdReserveTripAPIMessage := a.NewReserveTripAPIMessage(recdReserveGRPCMsg.APIMessage.MessageType,
-			recdReserveGRPCMsg.APIMessage.AuthToken, recdReserveGRPCMsg.APIMessage.ClientID,
+		recdReserveTripAPIMessage := a.NewReserveTripAPIMessage(recdReserveGRPCMsg.ApiMessage.MessageType,
+			recdReserveGRPCMsg.ApiMessage.AuthToken, recdReserveGRPCMsg.ApiMessage.ClientId,
 			recdSourceDock, recdDestDock)
 
 		if recdReserveTripAPIMessage != testCase.expectedMessage {
@@ -816,22 +816,22 @@ func TestReceivingMessageFromMockLogicWithGRPC(t *testing.T) {
 
 	// Create a message for the mock gRPC client to send
 	ackBoatGRPC := pb.Boat{
-		BoatID: testBoatID,
+		BoatId: testBoatID,
 		Name:   testBoatName,
 	}
 	ackAPIMessageGRPC := pb.AckAPIMessage{
 		MessageType:   a.APIMessageTypeAck,
-		ClientID:      testClientID,
+		ClientId:      testClientID,
 		IsReserved:    true,
 		Boat:          &ackBoatGRPC,
-		TransactionID: testTransactionID,
+		TransactionId: testTransactionID,
 	}
 	ackClientDataGRPC := pb.ClientData{
 		ConnName: testClientConnectionName,
 		ConnType: a.ConnectionTypeWebSocket,
 	}
 	ackMessageGRPC := pb.AckMessage{
-		APIMessage: &ackAPIMessageGRPC,
+		ApiMessage: &ackAPIMessageGRPC,
 		ClientData: &ackClientDataGRPC,
 	}
 

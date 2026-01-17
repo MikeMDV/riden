@@ -26,25 +26,25 @@ const (
 type ServiceState int32
 
 const (
-	ServiceState_Unknown     ServiceState = 0
-	ServiceState_OnTime      ServiceState = 1
-	ServiceState_Delayed     ServiceState = 2
-	ServiceState_Unavailable ServiceState = 3
+	ServiceState_UNKNOWN     ServiceState = 0
+	ServiceState_ON_TIME     ServiceState = 1
+	ServiceState_DELAYED     ServiceState = 2
+	ServiceState_UNAVAILABLE ServiceState = 3
 )
 
 // Enum value maps for ServiceState.
 var (
 	ServiceState_name = map[int32]string{
-		0: "Unknown",
-		1: "OnTime",
-		2: "Delayed",
-		3: "Unavailable",
+		0: "UNKNOWN",
+		1: "ON_TIME",
+		2: "DELAYED",
+		3: "UNAVAILABLE",
 	}
 	ServiceState_value = map[string]int32{
-		"Unknown":     0,
-		"OnTime":      1,
-		"Delayed":     2,
-		"Unavailable": 3,
+		"UNKNOWN":     0,
+		"ON_TIME":     1,
+		"DELAYED":     2,
+		"UNAVAILABLE": 3,
 	}
 )
 
@@ -79,8 +79,8 @@ func (ServiceState) EnumDescriptor() ([]byte, []int) {
 // located
 type Address struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Number        int32                  `protobuf:"varint,1,opt,name=Number,proto3" json:"Number,omitempty"`
-	Street        string                 `protobuf:"bytes,2,opt,name=Street,proto3" json:"Street,omitempty"`
+	Number        int32                  `protobuf:"varint,1,opt,name=number,proto3" json:"number,omitempty"`
+	Street        string                 `protobuf:"bytes,2,opt,name=street,proto3" json:"street,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -133,8 +133,8 @@ func (x *Address) GetStreet() string {
 // board the boat
 type Dock struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Address       *Address               `protobuf:"bytes,1,opt,name=Address,proto3" json:"Address,omitempty"`
-	Gangway       string                 `protobuf:"bytes,2,opt,name=Gangway,proto3" json:"Gangway,omitempty"`
+	Address       *Address               `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	Gangway       string                 `protobuf:"bytes,2,opt,name=gangway,proto3" json:"gangway,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -186,8 +186,8 @@ func (x *Dock) GetGangway() string {
 // Boat represents the data for individual boats
 type Boat struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	BoatID        int32                  `protobuf:"varint,1,opt,name=BoatID,proto3" json:"BoatID,omitempty"`
-	Name          string                 `protobuf:"bytes,2,opt,name=Name,proto3" json:"Name,omitempty"`
+	BoatId        int32                  `protobuf:"varint,1,opt,name=boat_id,json=boatId,proto3" json:"boat_id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -222,9 +222,9 @@ func (*Boat) Descriptor() ([]byte, []int) {
 	return file_proto_adapter_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *Boat) GetBoatID() int32 {
+func (x *Boat) GetBoatId() int32 {
 	if x != nil {
-		return x.BoatID
+		return x.BoatId
 	}
 	return 0
 }
@@ -240,8 +240,8 @@ func (x *Boat) GetName() string {
 // send messages
 type ClientData struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	ConnName      string                 `protobuf:"bytes,1,opt,name=ConnName,proto3" json:"ConnName,omitempty"`
-	ConnType      string                 `protobuf:"bytes,2,opt,name=ConnType,proto3" json:"ConnType,omitempty"`
+	ConnName      string                 `protobuf:"bytes,1,opt,name=conn_name,json=connName,proto3" json:"conn_name,omitempty"`
+	ConnType      string                 `protobuf:"bytes,2,opt,name=conn_type,json=connType,proto3" json:"conn_type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -294,12 +294,12 @@ func (x *ClientData) GetConnType() string {
 // sends to the MockLogic
 type ReserveTripAPIMessage struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// MessageType is a const = "reserveTrip"
-	MessageType     string `protobuf:"bytes,1,opt,name=MessageType,proto3" json:"MessageType,omitempty"`
-	AuthToken       string `protobuf:"bytes,2,opt,name=AuthToken,proto3" json:"AuthToken,omitempty"`
-	ClientID        string `protobuf:"bytes,3,opt,name=ClientID,proto3" json:"ClientID,omitempty"`
-	SourceDock      *Dock  `protobuf:"bytes,5,opt,name=SourceDock,proto3" json:"SourceDock,omitempty"`
-	DestinationDock *Dock  `protobuf:"bytes,6,opt,name=DestinationDock,proto3" json:"DestinationDock,omitempty"`
+	// message_type is a const = "reserve_trip"
+	MessageType     string `protobuf:"bytes,1,opt,name=message_type,json=messageType,proto3" json:"message_type,omitempty"`
+	AuthToken       string `protobuf:"bytes,2,opt,name=auth_token,json=authToken,proto3" json:"auth_token,omitempty"`
+	ClientId        string `protobuf:"bytes,3,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
+	SourceDock      *Dock  `protobuf:"bytes,5,opt,name=source_dock,json=sourceDock,proto3" json:"source_dock,omitempty"`
+	DestinationDock *Dock  `protobuf:"bytes,6,opt,name=destination_dock,json=destinationDock,proto3" json:"destination_dock,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -348,9 +348,9 @@ func (x *ReserveTripAPIMessage) GetAuthToken() string {
 	return ""
 }
 
-func (x *ReserveTripAPIMessage) GetClientID() string {
+func (x *ReserveTripAPIMessage) GetClientId() string {
 	if x != nil {
-		return x.ClientID
+		return x.ClientId
 	}
 	return ""
 }
@@ -373,12 +373,12 @@ func (x *ReserveTripAPIMessage) GetDestinationDock() *Dock {
 // sends to a client indicating that a ReserveTrip message is being processed
 type AckAPIMessage struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// MessageType is a const = "ack"
-	MessageType   string `protobuf:"bytes,1,opt,name=MessageType,proto3" json:"MessageType,omitempty"`
-	ClientID      string `protobuf:"bytes,2,opt,name=ClientID,proto3" json:"ClientID,omitempty"`
-	IsReserved    bool   `protobuf:"varint,3,opt,name=IsReserved,proto3" json:"IsReserved,omitempty"`
-	Boat          *Boat  `protobuf:"bytes,4,opt,name=Boat,proto3" json:"Boat,omitempty"`
-	TransactionID string `protobuf:"bytes,5,opt,name=TransactionID,proto3" json:"TransactionID,omitempty"`
+	// message_type is a const = "ack"
+	MessageType   string `protobuf:"bytes,1,opt,name=message_type,json=messageType,proto3" json:"message_type,omitempty"`
+	ClientId      string `protobuf:"bytes,2,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
+	IsReserved    bool   `protobuf:"varint,3,opt,name=is_reserved,json=isReserved,proto3" json:"is_reserved,omitempty"`
+	Boat          *Boat  `protobuf:"bytes,4,opt,name=boat,proto3" json:"boat,omitempty"`
+	TransactionId string `protobuf:"bytes,5,opt,name=transaction_id,json=transactionId,proto3" json:"transaction_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -420,9 +420,9 @@ func (x *AckAPIMessage) GetMessageType() string {
 	return ""
 }
 
-func (x *AckAPIMessage) GetClientID() string {
+func (x *AckAPIMessage) GetClientId() string {
 	if x != nil {
-		return x.ClientID
+		return x.ClientId
 	}
 	return ""
 }
@@ -441,9 +441,9 @@ func (x *AckAPIMessage) GetBoat() *Boat {
 	return nil
 }
 
-func (x *AckAPIMessage) GetTransactionID() string {
+func (x *AckAPIMessage) GetTransactionId() string {
 	if x != nil {
-		return x.TransactionID
+		return x.TransactionId
 	}
 	return ""
 }
@@ -452,12 +452,12 @@ func (x *AckAPIMessage) GetTransactionID() string {
 // sends to the MockLogic
 type AtDockAPIMessage struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// MessageType is a const = "atDock"
-	MessageType   string `protobuf:"bytes,1,opt,name=MessageType,proto3" json:"MessageType,omitempty"`
-	ClientID      string `protobuf:"bytes,2,opt,name=ClientID,proto3" json:"ClientID,omitempty"`
-	Boat          *Boat  `protobuf:"bytes,3,opt,name=Boat,proto3" json:"Boat,omitempty"`
-	Dock          *Dock  `protobuf:"bytes,4,opt,name=Dock,proto3" json:"Dock,omitempty"`
-	TransactionID string `protobuf:"bytes,5,opt,name=TransactionID,proto3" json:"TransactionID,omitempty"`
+	// message_type is a const = "at_dock"
+	MessageType   string `protobuf:"bytes,1,opt,name=message_type,json=messageType,proto3" json:"message_type,omitempty"`
+	ClientId      string `protobuf:"bytes,2,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
+	Boat          *Boat  `protobuf:"bytes,3,opt,name=boat,proto3" json:"boat,omitempty"`
+	Dock          *Dock  `protobuf:"bytes,4,opt,name=dock,proto3" json:"dock,omitempty"`
+	TransactionId string `protobuf:"bytes,5,opt,name=transaction_id,json=transactionId,proto3" json:"transaction_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -499,9 +499,9 @@ func (x *AtDockAPIMessage) GetMessageType() string {
 	return ""
 }
 
-func (x *AtDockAPIMessage) GetClientID() string {
+func (x *AtDockAPIMessage) GetClientId() string {
 	if x != nil {
-		return x.ClientID
+		return x.ClientId
 	}
 	return ""
 }
@@ -520,9 +520,9 @@ func (x *AtDockAPIMessage) GetDock() *Dock {
 	return nil
 }
 
-func (x *AtDockAPIMessage) GetTransactionID() string {
+func (x *AtDockAPIMessage) GetTransactionId() string {
 	if x != nil {
-		return x.TransactionID
+		return x.TransactionId
 	}
 	return ""
 }
@@ -531,11 +531,11 @@ func (x *AtDockAPIMessage) GetTransactionID() string {
 // sends to the MockLogic
 type OnBoatAPIMessage struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// MessageType is a const = "onBoat"
-	MessageType   string `protobuf:"bytes,1,opt,name=MessageType,proto3" json:"MessageType,omitempty"`
-	ClientID      string `protobuf:"bytes,2,opt,name=ClientID,proto3" json:"ClientID,omitempty"`
-	Boat          *Boat  `protobuf:"bytes,3,opt,name=Boat,proto3" json:"Boat,omitempty"`
-	TransactionID string `protobuf:"bytes,4,opt,name=TransactionID,proto3" json:"TransactionID,omitempty"`
+	// message_type is a const = "on_boat"
+	MessageType   string `protobuf:"bytes,1,opt,name=message_type,json=messageType,proto3" json:"message_type,omitempty"`
+	ClientId      string `protobuf:"bytes,2,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
+	Boat          *Boat  `protobuf:"bytes,3,opt,name=boat,proto3" json:"boat,omitempty"`
+	TransactionId string `protobuf:"bytes,4,opt,name=transaction_id,json=transactionId,proto3" json:"transaction_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -577,9 +577,9 @@ func (x *OnBoatAPIMessage) GetMessageType() string {
 	return ""
 }
 
-func (x *OnBoatAPIMessage) GetClientID() string {
+func (x *OnBoatAPIMessage) GetClientId() string {
 	if x != nil {
-		return x.ClientID
+		return x.ClientId
 	}
 	return ""
 }
@@ -591,9 +591,9 @@ func (x *OnBoatAPIMessage) GetBoat() *Boat {
 	return nil
 }
 
-func (x *OnBoatAPIMessage) GetTransactionID() string {
+func (x *OnBoatAPIMessage) GetTransactionId() string {
 	if x != nil {
-		return x.TransactionID
+		return x.TransactionId
 	}
 	return ""
 }
@@ -602,11 +602,11 @@ func (x *OnBoatAPIMessage) GetTransactionID() string {
 // sends to the MockLogic
 type OffBoatAPIMessage struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// MessageType is a const = "offBoat"
-	MessageType   string `protobuf:"bytes,1,opt,name=MessageType,proto3" json:"MessageType,omitempty"`
-	ClientID      string `protobuf:"bytes,2,opt,name=ClientID,proto3" json:"ClientID,omitempty"`
-	Boat          *Boat  `protobuf:"bytes,3,opt,name=Boat,proto3" json:"Boat,omitempty"`
-	TransactionID string `protobuf:"bytes,4,opt,name=TransactionID,proto3" json:"TransactionID,omitempty"`
+	// message_type is a const = "off_boat"
+	MessageType   string `protobuf:"bytes,1,opt,name=message_type,json=messageType,proto3" json:"message_type,omitempty"`
+	ClientId      string `protobuf:"bytes,2,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
+	Boat          *Boat  `protobuf:"bytes,3,opt,name=boat,proto3" json:"boat,omitempty"`
+	TransactionId string `protobuf:"bytes,4,opt,name=transaction_id,json=transactionId,proto3" json:"transaction_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -648,9 +648,9 @@ func (x *OffBoatAPIMessage) GetMessageType() string {
 	return ""
 }
 
-func (x *OffBoatAPIMessage) GetClientID() string {
+func (x *OffBoatAPIMessage) GetClientId() string {
 	if x != nil {
-		return x.ClientID
+		return x.ClientId
 	}
 	return ""
 }
@@ -662,9 +662,9 @@ func (x *OffBoatAPIMessage) GetBoat() *Boat {
 	return nil
 }
 
-func (x *OffBoatAPIMessage) GetTransactionID() string {
+func (x *OffBoatAPIMessage) GetTransactionId() string {
 	if x != nil {
-		return x.TransactionID
+		return x.TransactionId
 	}
 	return ""
 }
@@ -673,13 +673,13 @@ func (x *OffBoatAPIMessage) GetTransactionID() string {
 // sends to all clients
 type BoatStatusAPIMessage struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// MessageType is a const = "boatStatus"
-	MessageType   string       `protobuf:"bytes,1,opt,name=MessageType,proto3" json:"MessageType,omitempty"`
-	Boat          *Boat        `protobuf:"bytes,2,opt,name=Boat,proto3" json:"Boat,omitempty"`
-	ServiceState  ServiceState `protobuf:"varint,3,opt,name=ServiceState,proto3,enum=adapter.ServiceState" json:"ServiceState,omitempty"`
-	PreviousDock  *Dock        `protobuf:"bytes,4,opt,name=PreviousDock,proto3" json:"PreviousDock,omitempty"`
-	CurrentDock   *Dock        `protobuf:"bytes,5,opt,name=CurrentDock,proto3" json:"CurrentDock,omitempty"`
-	NextDock      *Dock        `protobuf:"bytes,6,opt,name=NextDock,proto3" json:"NextDock,omitempty"`
+	// message_type is a const = "boat_status"
+	MessageType   string       `protobuf:"bytes,1,opt,name=message_type,json=messageType,proto3" json:"message_type,omitempty"`
+	Boat          *Boat        `protobuf:"bytes,2,opt,name=boat,proto3" json:"boat,omitempty"`
+	ServiceState  ServiceState `protobuf:"varint,3,opt,name=service_state,json=serviceState,proto3,enum=adapter.ServiceState" json:"service_state,omitempty"`
+	PreviousDock  *Dock        `protobuf:"bytes,4,opt,name=previous_dock,json=previousDock,proto3" json:"previous_dock,omitempty"`
+	CurrentDock   *Dock        `protobuf:"bytes,5,opt,name=current_dock,json=currentDock,proto3" json:"current_dock,omitempty"`
+	NextDock      *Dock        `protobuf:"bytes,6,opt,name=next_dock,json=nextDock,proto3" json:"next_dock,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -732,7 +732,7 @@ func (x *BoatStatusAPIMessage) GetServiceState() ServiceState {
 	if x != nil {
 		return x.ServiceState
 	}
-	return ServiceState_Unknown
+	return ServiceState_UNKNOWN
 }
 
 func (x *BoatStatusAPIMessage) GetPreviousDock() *Dock {
@@ -760,12 +760,12 @@ func (x *BoatStatusAPIMessage) GetNextDock() *Dock {
 // MockLogic sends to the client
 type ArrivedAPIMessage struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// MessageType is a const = "arrived"
-	MessageType   string `protobuf:"bytes,1,opt,name=MessageType,proto3" json:"MessageType,omitempty"`
-	ClientID      string `protobuf:"bytes,2,opt,name=ClientID,proto3" json:"ClientID,omitempty"`
-	Boat          *Boat  `protobuf:"bytes,3,opt,name=Boat,proto3" json:"Boat,omitempty"`
-	Dock          *Dock  `protobuf:"bytes,4,opt,name=Dock,proto3" json:"Dock,omitempty"`
-	TransactionID string `protobuf:"bytes,5,opt,name=TransactionID,proto3" json:"TransactionID,omitempty"`
+	// message_type is a const = "arrived"
+	MessageType   string `protobuf:"bytes,1,opt,name=message_type,json=messageType,proto3" json:"message_type,omitempty"`
+	ClientId      string `protobuf:"bytes,2,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
+	Boat          *Boat  `protobuf:"bytes,3,opt,name=boat,proto3" json:"boat,omitempty"`
+	Dock          *Dock  `protobuf:"bytes,4,opt,name=dock,proto3" json:"dock,omitempty"`
+	TransactionId string `protobuf:"bytes,5,opt,name=transaction_id,json=transactionId,proto3" json:"transaction_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -807,9 +807,9 @@ func (x *ArrivedAPIMessage) GetMessageType() string {
 	return ""
 }
 
-func (x *ArrivedAPIMessage) GetClientID() string {
+func (x *ArrivedAPIMessage) GetClientId() string {
 	if x != nil {
-		return x.ClientID
+		return x.ClientId
 	}
 	return ""
 }
@@ -828,9 +828,9 @@ func (x *ArrivedAPIMessage) GetDock() *Dock {
 	return nil
 }
 
-func (x *ArrivedAPIMessage) GetTransactionID() string {
+func (x *ArrivedAPIMessage) GetTransactionId() string {
 	if x != nil {
-		return x.TransactionID
+		return x.TransactionId
 	}
 	return ""
 }
@@ -839,8 +839,8 @@ func (x *ArrivedAPIMessage) GetTransactionID() string {
 // connection data that the Adapter uses
 type ReserveTripMessage struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	APIMessage    *ReserveTripAPIMessage `protobuf:"bytes,1,opt,name=APIMessage,proto3" json:"APIMessage,omitempty"`
-	ClientData    *ClientData            `protobuf:"bytes,2,opt,name=ClientData,proto3" json:"ClientData,omitempty"`
+	ApiMessage    *ReserveTripAPIMessage `protobuf:"bytes,1,opt,name=api_message,json=apiMessage,proto3" json:"api_message,omitempty"`
+	ClientData    *ClientData            `protobuf:"bytes,2,opt,name=client_data,json=clientData,proto3" json:"client_data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -875,9 +875,9 @@ func (*ReserveTripMessage) Descriptor() ([]byte, []int) {
 	return file_proto_adapter_proto_rawDescGZIP(), []int{11}
 }
 
-func (x *ReserveTripMessage) GetAPIMessage() *ReserveTripAPIMessage {
+func (x *ReserveTripMessage) GetApiMessage() *ReserveTripAPIMessage {
 	if x != nil {
-		return x.APIMessage
+		return x.ApiMessage
 	}
 	return nil
 }
@@ -893,8 +893,8 @@ func (x *ReserveTripMessage) GetClientData() *ClientData {
 // connection data that the Adapter uses
 type AckMessage struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	APIMessage    *AckAPIMessage         `protobuf:"bytes,1,opt,name=APIMessage,proto3" json:"APIMessage,omitempty"`
-	ClientData    *ClientData            `protobuf:"bytes,2,opt,name=ClientData,proto3" json:"ClientData,omitempty"`
+	ApiMessage    *AckAPIMessage         `protobuf:"bytes,1,opt,name=api_message,json=apiMessage,proto3" json:"api_message,omitempty"`
+	ClientData    *ClientData            `protobuf:"bytes,2,opt,name=client_data,json=clientData,proto3" json:"client_data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -929,9 +929,9 @@ func (*AckMessage) Descriptor() ([]byte, []int) {
 	return file_proto_adapter_proto_rawDescGZIP(), []int{12}
 }
 
-func (x *AckMessage) GetAPIMessage() *AckAPIMessage {
+func (x *AckMessage) GetApiMessage() *AckAPIMessage {
 	if x != nil {
-		return x.APIMessage
+		return x.ApiMessage
 	}
 	return nil
 }
@@ -947,8 +947,8 @@ func (x *AckMessage) GetClientData() *ClientData {
 // connection data that the Adapter uses
 type AtDockMessage struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	APIMessage    *AtDockAPIMessage      `protobuf:"bytes,1,opt,name=APIMessage,proto3" json:"APIMessage,omitempty"`
-	ClientData    *ClientData            `protobuf:"bytes,2,opt,name=ClientData,proto3" json:"ClientData,omitempty"`
+	ApiMessage    *AtDockAPIMessage      `protobuf:"bytes,1,opt,name=api_message,json=apiMessage,proto3" json:"api_message,omitempty"`
+	ClientData    *ClientData            `protobuf:"bytes,2,opt,name=client_data,json=clientData,proto3" json:"client_data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -983,9 +983,9 @@ func (*AtDockMessage) Descriptor() ([]byte, []int) {
 	return file_proto_adapter_proto_rawDescGZIP(), []int{13}
 }
 
-func (x *AtDockMessage) GetAPIMessage() *AtDockAPIMessage {
+func (x *AtDockMessage) GetApiMessage() *AtDockAPIMessage {
 	if x != nil {
-		return x.APIMessage
+		return x.ApiMessage
 	}
 	return nil
 }
@@ -1001,8 +1001,8 @@ func (x *AtDockMessage) GetClientData() *ClientData {
 // connection data that the Adapter uses
 type OnBoatMessage struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	APIMessage    *OnBoatAPIMessage      `protobuf:"bytes,1,opt,name=APIMessage,proto3" json:"APIMessage,omitempty"`
-	ClientData    *ClientData            `protobuf:"bytes,2,opt,name=ClientData,proto3" json:"ClientData,omitempty"`
+	ApiMessage    *OnBoatAPIMessage      `protobuf:"bytes,1,opt,name=api_message,json=apiMessage,proto3" json:"api_message,omitempty"`
+	ClientData    *ClientData            `protobuf:"bytes,2,opt,name=client_data,json=clientData,proto3" json:"client_data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1037,9 +1037,9 @@ func (*OnBoatMessage) Descriptor() ([]byte, []int) {
 	return file_proto_adapter_proto_rawDescGZIP(), []int{14}
 }
 
-func (x *OnBoatMessage) GetAPIMessage() *OnBoatAPIMessage {
+func (x *OnBoatMessage) GetApiMessage() *OnBoatAPIMessage {
 	if x != nil {
-		return x.APIMessage
+		return x.ApiMessage
 	}
 	return nil
 }
@@ -1055,8 +1055,8 @@ func (x *OnBoatMessage) GetClientData() *ClientData {
 // connection data that the Adapter uses
 type OffBoatMessage struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	APIMessage    *OffBoatAPIMessage     `protobuf:"bytes,1,opt,name=APIMessage,proto3" json:"APIMessage,omitempty"`
-	ClientData    *ClientData            `protobuf:"bytes,2,opt,name=ClientData,proto3" json:"ClientData,omitempty"`
+	ApiMessage    *OffBoatAPIMessage     `protobuf:"bytes,1,opt,name=api_message,json=apiMessage,proto3" json:"api_message,omitempty"`
+	ClientData    *ClientData            `protobuf:"bytes,2,opt,name=client_data,json=clientData,proto3" json:"client_data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1091,9 +1091,9 @@ func (*OffBoatMessage) Descriptor() ([]byte, []int) {
 	return file_proto_adapter_proto_rawDescGZIP(), []int{15}
 }
 
-func (x *OffBoatMessage) GetAPIMessage() *OffBoatAPIMessage {
+func (x *OffBoatMessage) GetApiMessage() *OffBoatAPIMessage {
 	if x != nil {
-		return x.APIMessage
+		return x.ApiMessage
 	}
 	return nil
 }
@@ -1109,8 +1109,8 @@ func (x *OffBoatMessage) GetClientData() *ClientData {
 // connection data that the Adapter uses
 type BoatStatusMessage struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	APIMessage    *BoatStatusAPIMessage  `protobuf:"bytes,1,opt,name=APIMessage,proto3" json:"APIMessage,omitempty"`
-	ClientData    *ClientData            `protobuf:"bytes,2,opt,name=ClientData,proto3" json:"ClientData,omitempty"`
+	ApiMessage    *BoatStatusAPIMessage  `protobuf:"bytes,1,opt,name=api_message,json=apiMessage,proto3" json:"api_message,omitempty"`
+	ClientData    *ClientData            `protobuf:"bytes,2,opt,name=client_data,json=clientData,proto3" json:"client_data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1145,9 +1145,9 @@ func (*BoatStatusMessage) Descriptor() ([]byte, []int) {
 	return file_proto_adapter_proto_rawDescGZIP(), []int{16}
 }
 
-func (x *BoatStatusMessage) GetAPIMessage() *BoatStatusAPIMessage {
+func (x *BoatStatusMessage) GetApiMessage() *BoatStatusAPIMessage {
 	if x != nil {
-		return x.APIMessage
+		return x.ApiMessage
 	}
 	return nil
 }
@@ -1163,8 +1163,8 @@ func (x *BoatStatusMessage) GetClientData() *ClientData {
 // connection data that the Adapter uses
 type ArrivedMessage struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	APIMessage    *ArrivedAPIMessage     `protobuf:"bytes,1,opt,name=APIMessage,proto3" json:"APIMessage,omitempty"`
-	ClientData    *ClientData            `protobuf:"bytes,2,opt,name=ClientData,proto3" json:"ClientData,omitempty"`
+	ApiMessage    *ArrivedAPIMessage     `protobuf:"bytes,1,opt,name=api_message,json=apiMessage,proto3" json:"api_message,omitempty"`
+	ClientData    *ClientData            `protobuf:"bytes,2,opt,name=client_data,json=clientData,proto3" json:"client_data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1199,9 +1199,9 @@ func (*ArrivedMessage) Descriptor() ([]byte, []int) {
 	return file_proto_adapter_proto_rawDescGZIP(), []int{17}
 }
 
-func (x *ArrivedMessage) GetAPIMessage() *ArrivedAPIMessage {
+func (x *ArrivedMessage) GetApiMessage() *ArrivedAPIMessage {
 	if x != nil {
-		return x.APIMessage
+		return x.ApiMessage
 	}
 	return nil
 }
@@ -1258,120 +1258,104 @@ const file_proto_adapter_proto_rawDesc = "" +
 	"\n" +
 	"\x13proto/adapter.proto\x12\aadapter\"9\n" +
 	"\aAddress\x12\x16\n" +
-	"\x06Number\x18\x01 \x01(\x05R\x06Number\x12\x16\n" +
-	"\x06Street\x18\x02 \x01(\tR\x06Street\"L\n" +
+	"\x06number\x18\x01 \x01(\x05R\x06number\x12\x16\n" +
+	"\x06street\x18\x02 \x01(\tR\x06street\"L\n" +
 	"\x04Dock\x12*\n" +
-	"\aAddress\x18\x01 \x01(\v2\x10.adapter.AddressR\aAddress\x12\x18\n" +
-	"\aGangway\x18\x02 \x01(\tR\aGangway\"2\n" +
-	"\x04Boat\x12\x16\n" +
-	"\x06BoatID\x18\x01 \x01(\x05R\x06BoatID\x12\x12\n" +
-	"\x04Name\x18\x02 \x01(\tR\x04Name\"D\n" +
+	"\aaddress\x18\x01 \x01(\v2\x10.adapter.AddressR\aaddress\x12\x18\n" +
+	"\agangway\x18\x02 \x01(\tR\agangway\"3\n" +
+	"\x04Boat\x12\x17\n" +
+	"\aboat_id\x18\x01 \x01(\x05R\x06boatId\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\"F\n" +
 	"\n" +
-	"ClientData\x12\x1a\n" +
-	"\bConnName\x18\x01 \x01(\tR\bConnName\x12\x1a\n" +
-	"\bConnType\x18\x02 \x01(\tR\bConnType\"\xdb\x01\n" +
-	"\x15ReserveTripAPIMessage\x12 \n" +
-	"\vMessageType\x18\x01 \x01(\tR\vMessageType\x12\x1c\n" +
-	"\tAuthToken\x18\x02 \x01(\tR\tAuthToken\x12\x1a\n" +
-	"\bClientID\x18\x03 \x01(\tR\bClientID\x12-\n" +
+	"ClientData\x12\x1b\n" +
+	"\tconn_name\x18\x01 \x01(\tR\bconnName\x12\x1b\n" +
+	"\tconn_type\x18\x02 \x01(\tR\bconnType\"\xe0\x01\n" +
+	"\x15ReserveTripAPIMessage\x12!\n" +
+	"\fmessage_type\x18\x01 \x01(\tR\vmessageType\x12\x1d\n" +
 	"\n" +
-	"SourceDock\x18\x05 \x01(\v2\r.adapter.DockR\n" +
-	"SourceDock\x127\n" +
-	"\x0fDestinationDock\x18\x06 \x01(\v2\r.adapter.DockR\x0fDestinationDock\"\xb6\x01\n" +
-	"\rAckAPIMessage\x12 \n" +
-	"\vMessageType\x18\x01 \x01(\tR\vMessageType\x12\x1a\n" +
-	"\bClientID\x18\x02 \x01(\tR\bClientID\x12\x1e\n" +
+	"auth_token\x18\x02 \x01(\tR\tauthToken\x12\x1b\n" +
+	"\tclient_id\x18\x03 \x01(\tR\bclientId\x12.\n" +
+	"\vsource_dock\x18\x05 \x01(\v2\r.adapter.DockR\n" +
+	"sourceDock\x128\n" +
+	"\x10destination_dock\x18\x06 \x01(\v2\r.adapter.DockR\x0fdestinationDock\"\xba\x01\n" +
+	"\rAckAPIMessage\x12!\n" +
+	"\fmessage_type\x18\x01 \x01(\tR\vmessageType\x12\x1b\n" +
+	"\tclient_id\x18\x02 \x01(\tR\bclientId\x12\x1f\n" +
+	"\vis_reserved\x18\x03 \x01(\bR\n" +
+	"isReserved\x12!\n" +
+	"\x04boat\x18\x04 \x01(\v2\r.adapter.BoatR\x04boat\x12%\n" +
+	"\x0etransaction_id\x18\x05 \x01(\tR\rtransactionId\"\xbf\x01\n" +
+	"\x10AtDockAPIMessage\x12!\n" +
+	"\fmessage_type\x18\x01 \x01(\tR\vmessageType\x12\x1b\n" +
+	"\tclient_id\x18\x02 \x01(\tR\bclientId\x12!\n" +
+	"\x04boat\x18\x03 \x01(\v2\r.adapter.BoatR\x04boat\x12!\n" +
+	"\x04dock\x18\x04 \x01(\v2\r.adapter.DockR\x04dock\x12%\n" +
+	"\x0etransaction_id\x18\x05 \x01(\tR\rtransactionId\"\x9c\x01\n" +
+	"\x10OnBoatAPIMessage\x12!\n" +
+	"\fmessage_type\x18\x01 \x01(\tR\vmessageType\x12\x1b\n" +
+	"\tclient_id\x18\x02 \x01(\tR\bclientId\x12!\n" +
+	"\x04boat\x18\x03 \x01(\v2\r.adapter.BoatR\x04boat\x12%\n" +
+	"\x0etransaction_id\x18\x04 \x01(\tR\rtransactionId\"\x9d\x01\n" +
+	"\x11OffBoatAPIMessage\x12!\n" +
+	"\fmessage_type\x18\x01 \x01(\tR\vmessageType\x12\x1b\n" +
+	"\tclient_id\x18\x02 \x01(\tR\bclientId\x12!\n" +
+	"\x04boat\x18\x03 \x01(\v2\r.adapter.BoatR\x04boat\x12%\n" +
+	"\x0etransaction_id\x18\x04 \x01(\tR\rtransactionId\"\xaa\x02\n" +
+	"\x14BoatStatusAPIMessage\x12!\n" +
+	"\fmessage_type\x18\x01 \x01(\tR\vmessageType\x12!\n" +
+	"\x04boat\x18\x02 \x01(\v2\r.adapter.BoatR\x04boat\x12:\n" +
+	"\rservice_state\x18\x03 \x01(\x0e2\x15.adapter.ServiceStateR\fserviceState\x122\n" +
+	"\rprevious_dock\x18\x04 \x01(\v2\r.adapter.DockR\fpreviousDock\x120\n" +
+	"\fcurrent_dock\x18\x05 \x01(\v2\r.adapter.DockR\vcurrentDock\x12*\n" +
+	"\tnext_dock\x18\x06 \x01(\v2\r.adapter.DockR\bnextDock\"\xc0\x01\n" +
+	"\x11ArrivedAPIMessage\x12!\n" +
+	"\fmessage_type\x18\x01 \x01(\tR\vmessageType\x12\x1b\n" +
+	"\tclient_id\x18\x02 \x01(\tR\bclientId\x12!\n" +
+	"\x04boat\x18\x03 \x01(\v2\r.adapter.BoatR\x04boat\x12!\n" +
+	"\x04dock\x18\x04 \x01(\v2\r.adapter.DockR\x04dock\x12%\n" +
+	"\x0etransaction_id\x18\x05 \x01(\tR\rtransactionId\"\x8b\x01\n" +
+	"\x12ReserveTripMessage\x12?\n" +
+	"\vapi_message\x18\x01 \x01(\v2\x1e.adapter.ReserveTripAPIMessageR\n" +
+	"apiMessage\x124\n" +
+	"\vclient_data\x18\x02 \x01(\v2\x13.adapter.ClientDataR\n" +
+	"clientData\"{\n" +
 	"\n" +
-	"IsReserved\x18\x03 \x01(\bR\n" +
-	"IsReserved\x12!\n" +
-	"\x04Boat\x18\x04 \x01(\v2\r.adapter.BoatR\x04Boat\x12$\n" +
-	"\rTransactionID\x18\x05 \x01(\tR\rTransactionID\"\xbc\x01\n" +
-	"\x10AtDockAPIMessage\x12 \n" +
-	"\vMessageType\x18\x01 \x01(\tR\vMessageType\x12\x1a\n" +
-	"\bClientID\x18\x02 \x01(\tR\bClientID\x12!\n" +
-	"\x04Boat\x18\x03 \x01(\v2\r.adapter.BoatR\x04Boat\x12!\n" +
-	"\x04Dock\x18\x04 \x01(\v2\r.adapter.DockR\x04Dock\x12$\n" +
-	"\rTransactionID\x18\x05 \x01(\tR\rTransactionID\"\x99\x01\n" +
-	"\x10OnBoatAPIMessage\x12 \n" +
-	"\vMessageType\x18\x01 \x01(\tR\vMessageType\x12\x1a\n" +
-	"\bClientID\x18\x02 \x01(\tR\bClientID\x12!\n" +
-	"\x04Boat\x18\x03 \x01(\v2\r.adapter.BoatR\x04Boat\x12$\n" +
-	"\rTransactionID\x18\x04 \x01(\tR\rTransactionID\"\x9a\x01\n" +
-	"\x11OffBoatAPIMessage\x12 \n" +
-	"\vMessageType\x18\x01 \x01(\tR\vMessageType\x12\x1a\n" +
-	"\bClientID\x18\x02 \x01(\tR\bClientID\x12!\n" +
-	"\x04Boat\x18\x03 \x01(\v2\r.adapter.BoatR\x04Boat\x12$\n" +
-	"\rTransactionID\x18\x04 \x01(\tR\rTransactionID\"\xa5\x02\n" +
-	"\x14BoatStatusAPIMessage\x12 \n" +
-	"\vMessageType\x18\x01 \x01(\tR\vMessageType\x12!\n" +
-	"\x04Boat\x18\x02 \x01(\v2\r.adapter.BoatR\x04Boat\x129\n" +
-	"\fServiceState\x18\x03 \x01(\x0e2\x15.adapter.ServiceStateR\fServiceState\x121\n" +
-	"\fPreviousDock\x18\x04 \x01(\v2\r.adapter.DockR\fPreviousDock\x12/\n" +
-	"\vCurrentDock\x18\x05 \x01(\v2\r.adapter.DockR\vCurrentDock\x12)\n" +
-	"\bNextDock\x18\x06 \x01(\v2\r.adapter.DockR\bNextDock\"\xbd\x01\n" +
-	"\x11ArrivedAPIMessage\x12 \n" +
-	"\vMessageType\x18\x01 \x01(\tR\vMessageType\x12\x1a\n" +
-	"\bClientID\x18\x02 \x01(\tR\bClientID\x12!\n" +
-	"\x04Boat\x18\x03 \x01(\v2\r.adapter.BoatR\x04Boat\x12!\n" +
-	"\x04Dock\x18\x04 \x01(\v2\r.adapter.DockR\x04Dock\x12$\n" +
-	"\rTransactionID\x18\x05 \x01(\tR\rTransactionID\"\x89\x01\n" +
-	"\x12ReserveTripMessage\x12>\n" +
-	"\n" +
-	"APIMessage\x18\x01 \x01(\v2\x1e.adapter.ReserveTripAPIMessageR\n" +
-	"APIMessage\x123\n" +
-	"\n" +
-	"ClientData\x18\x02 \x01(\v2\x13.adapter.ClientDataR\n" +
-	"ClientData\"y\n" +
-	"\n" +
-	"AckMessage\x126\n" +
-	"\n" +
-	"APIMessage\x18\x01 \x01(\v2\x16.adapter.AckAPIMessageR\n" +
-	"APIMessage\x123\n" +
-	"\n" +
-	"ClientData\x18\x02 \x01(\v2\x13.adapter.ClientDataR\n" +
-	"ClientData\"\x7f\n" +
-	"\rAtDockMessage\x129\n" +
-	"\n" +
-	"APIMessage\x18\x01 \x01(\v2\x19.adapter.AtDockAPIMessageR\n" +
-	"APIMessage\x123\n" +
-	"\n" +
-	"ClientData\x18\x02 \x01(\v2\x13.adapter.ClientDataR\n" +
-	"ClientData\"\x7f\n" +
-	"\rOnBoatMessage\x129\n" +
-	"\n" +
-	"APIMessage\x18\x01 \x01(\v2\x19.adapter.OnBoatAPIMessageR\n" +
-	"APIMessage\x123\n" +
-	"\n" +
-	"ClientData\x18\x02 \x01(\v2\x13.adapter.ClientDataR\n" +
-	"ClientData\"\x81\x01\n" +
-	"\x0eOffBoatMessage\x12:\n" +
-	"\n" +
-	"APIMessage\x18\x01 \x01(\v2\x1a.adapter.OffBoatAPIMessageR\n" +
-	"APIMessage\x123\n" +
-	"\n" +
-	"ClientData\x18\x02 \x01(\v2\x13.adapter.ClientDataR\n" +
-	"ClientData\"\x87\x01\n" +
-	"\x11BoatStatusMessage\x12=\n" +
-	"\n" +
-	"APIMessage\x18\x01 \x01(\v2\x1d.adapter.BoatStatusAPIMessageR\n" +
-	"APIMessage\x123\n" +
-	"\n" +
-	"ClientData\x18\x02 \x01(\v2\x13.adapter.ClientDataR\n" +
-	"ClientData\"\x81\x01\n" +
-	"\x0eArrivedMessage\x12:\n" +
-	"\n" +
-	"APIMessage\x18\x01 \x01(\v2\x1a.adapter.ArrivedAPIMessageR\n" +
-	"APIMessage\x123\n" +
-	"\n" +
-	"ClientData\x18\x02 \x01(\v2\x13.adapter.ClientDataR\n" +
-	"ClientData\"\a\n" +
-	"\x05Empty*E\n" +
+	"AckMessage\x127\n" +
+	"\vapi_message\x18\x01 \x01(\v2\x16.adapter.AckAPIMessageR\n" +
+	"apiMessage\x124\n" +
+	"\vclient_data\x18\x02 \x01(\v2\x13.adapter.ClientDataR\n" +
+	"clientData\"\x81\x01\n" +
+	"\rAtDockMessage\x12:\n" +
+	"\vapi_message\x18\x01 \x01(\v2\x19.adapter.AtDockAPIMessageR\n" +
+	"apiMessage\x124\n" +
+	"\vclient_data\x18\x02 \x01(\v2\x13.adapter.ClientDataR\n" +
+	"clientData\"\x81\x01\n" +
+	"\rOnBoatMessage\x12:\n" +
+	"\vapi_message\x18\x01 \x01(\v2\x19.adapter.OnBoatAPIMessageR\n" +
+	"apiMessage\x124\n" +
+	"\vclient_data\x18\x02 \x01(\v2\x13.adapter.ClientDataR\n" +
+	"clientData\"\x83\x01\n" +
+	"\x0eOffBoatMessage\x12;\n" +
+	"\vapi_message\x18\x01 \x01(\v2\x1a.adapter.OffBoatAPIMessageR\n" +
+	"apiMessage\x124\n" +
+	"\vclient_data\x18\x02 \x01(\v2\x13.adapter.ClientDataR\n" +
+	"clientData\"\x89\x01\n" +
+	"\x11BoatStatusMessage\x12>\n" +
+	"\vapi_message\x18\x01 \x01(\v2\x1d.adapter.BoatStatusAPIMessageR\n" +
+	"apiMessage\x124\n" +
+	"\vclient_data\x18\x02 \x01(\v2\x13.adapter.ClientDataR\n" +
+	"clientData\"\x83\x01\n" +
+	"\x0eArrivedMessage\x12;\n" +
+	"\vapi_message\x18\x01 \x01(\v2\x1a.adapter.ArrivedAPIMessageR\n" +
+	"apiMessage\x124\n" +
+	"\vclient_data\x18\x02 \x01(\v2\x13.adapter.ClientDataR\n" +
+	"clientData\"\a\n" +
+	"\x05Empty*F\n" +
 	"\fServiceState\x12\v\n" +
-	"\aUnknown\x10\x00\x12\n" +
-	"\n" +
-	"\x06OnTime\x10\x01\x12\v\n" +
-	"\aDelayed\x10\x02\x12\x0f\n" +
-	"\vUnavailable\x10\x032\xa1\x03\n" +
+	"\aUNKNOWN\x10\x00\x12\v\n" +
+	"\aON_TIME\x10\x01\x12\v\n" +
+	"\aDELAYED\x10\x02\x12\x0f\n" +
+	"\vUNAVAILABLE\x10\x032\xa1\x03\n" +
 	"\aAdapter\x12@\n" +
 	"\vReserveTrip\x12\x0e.adapter.Empty\x1a\x1b.adapter.ReserveTripMessage\"\x00(\x010\x01\x120\n" +
 	"\x03Ack\x12\x13.adapter.AckMessage\x1a\x0e.adapter.Empty\"\x00(\x010\x01\x126\n" +
@@ -1419,35 +1403,35 @@ var file_proto_adapter_proto_goTypes = []any{
 	(*Empty)(nil),                 // 19: adapter.Empty
 }
 var file_proto_adapter_proto_depIdxs = []int32{
-	1,  // 0: adapter.Dock.Address:type_name -> adapter.Address
-	2,  // 1: adapter.ReserveTripAPIMessage.SourceDock:type_name -> adapter.Dock
-	2,  // 2: adapter.ReserveTripAPIMessage.DestinationDock:type_name -> adapter.Dock
-	3,  // 3: adapter.AckAPIMessage.Boat:type_name -> adapter.Boat
-	3,  // 4: adapter.AtDockAPIMessage.Boat:type_name -> adapter.Boat
-	2,  // 5: adapter.AtDockAPIMessage.Dock:type_name -> adapter.Dock
-	3,  // 6: adapter.OnBoatAPIMessage.Boat:type_name -> adapter.Boat
-	3,  // 7: adapter.OffBoatAPIMessage.Boat:type_name -> adapter.Boat
-	3,  // 8: adapter.BoatStatusAPIMessage.Boat:type_name -> adapter.Boat
-	0,  // 9: adapter.BoatStatusAPIMessage.ServiceState:type_name -> adapter.ServiceState
-	2,  // 10: adapter.BoatStatusAPIMessage.PreviousDock:type_name -> adapter.Dock
-	2,  // 11: adapter.BoatStatusAPIMessage.CurrentDock:type_name -> adapter.Dock
-	2,  // 12: adapter.BoatStatusAPIMessage.NextDock:type_name -> adapter.Dock
-	3,  // 13: adapter.ArrivedAPIMessage.Boat:type_name -> adapter.Boat
-	2,  // 14: adapter.ArrivedAPIMessage.Dock:type_name -> adapter.Dock
-	5,  // 15: adapter.ReserveTripMessage.APIMessage:type_name -> adapter.ReserveTripAPIMessage
-	4,  // 16: adapter.ReserveTripMessage.ClientData:type_name -> adapter.ClientData
-	6,  // 17: adapter.AckMessage.APIMessage:type_name -> adapter.AckAPIMessage
-	4,  // 18: adapter.AckMessage.ClientData:type_name -> adapter.ClientData
-	7,  // 19: adapter.AtDockMessage.APIMessage:type_name -> adapter.AtDockAPIMessage
-	4,  // 20: adapter.AtDockMessage.ClientData:type_name -> adapter.ClientData
-	8,  // 21: adapter.OnBoatMessage.APIMessage:type_name -> adapter.OnBoatAPIMessage
-	4,  // 22: adapter.OnBoatMessage.ClientData:type_name -> adapter.ClientData
-	9,  // 23: adapter.OffBoatMessage.APIMessage:type_name -> adapter.OffBoatAPIMessage
-	4,  // 24: adapter.OffBoatMessage.ClientData:type_name -> adapter.ClientData
-	10, // 25: adapter.BoatStatusMessage.APIMessage:type_name -> adapter.BoatStatusAPIMessage
-	4,  // 26: adapter.BoatStatusMessage.ClientData:type_name -> adapter.ClientData
-	11, // 27: adapter.ArrivedMessage.APIMessage:type_name -> adapter.ArrivedAPIMessage
-	4,  // 28: adapter.ArrivedMessage.ClientData:type_name -> adapter.ClientData
+	1,  // 0: adapter.Dock.address:type_name -> adapter.Address
+	2,  // 1: adapter.ReserveTripAPIMessage.source_dock:type_name -> adapter.Dock
+	2,  // 2: adapter.ReserveTripAPIMessage.destination_dock:type_name -> adapter.Dock
+	3,  // 3: adapter.AckAPIMessage.boat:type_name -> adapter.Boat
+	3,  // 4: adapter.AtDockAPIMessage.boat:type_name -> adapter.Boat
+	2,  // 5: adapter.AtDockAPIMessage.dock:type_name -> adapter.Dock
+	3,  // 6: adapter.OnBoatAPIMessage.boat:type_name -> adapter.Boat
+	3,  // 7: adapter.OffBoatAPIMessage.boat:type_name -> adapter.Boat
+	3,  // 8: adapter.BoatStatusAPIMessage.boat:type_name -> adapter.Boat
+	0,  // 9: adapter.BoatStatusAPIMessage.service_state:type_name -> adapter.ServiceState
+	2,  // 10: adapter.BoatStatusAPIMessage.previous_dock:type_name -> adapter.Dock
+	2,  // 11: adapter.BoatStatusAPIMessage.current_dock:type_name -> adapter.Dock
+	2,  // 12: adapter.BoatStatusAPIMessage.next_dock:type_name -> adapter.Dock
+	3,  // 13: adapter.ArrivedAPIMessage.boat:type_name -> adapter.Boat
+	2,  // 14: adapter.ArrivedAPIMessage.dock:type_name -> adapter.Dock
+	5,  // 15: adapter.ReserveTripMessage.api_message:type_name -> adapter.ReserveTripAPIMessage
+	4,  // 16: adapter.ReserveTripMessage.client_data:type_name -> adapter.ClientData
+	6,  // 17: adapter.AckMessage.api_message:type_name -> adapter.AckAPIMessage
+	4,  // 18: adapter.AckMessage.client_data:type_name -> adapter.ClientData
+	7,  // 19: adapter.AtDockMessage.api_message:type_name -> adapter.AtDockAPIMessage
+	4,  // 20: adapter.AtDockMessage.client_data:type_name -> adapter.ClientData
+	8,  // 21: adapter.OnBoatMessage.api_message:type_name -> adapter.OnBoatAPIMessage
+	4,  // 22: adapter.OnBoatMessage.client_data:type_name -> adapter.ClientData
+	9,  // 23: adapter.OffBoatMessage.api_message:type_name -> adapter.OffBoatAPIMessage
+	4,  // 24: adapter.OffBoatMessage.client_data:type_name -> adapter.ClientData
+	10, // 25: adapter.BoatStatusMessage.api_message:type_name -> adapter.BoatStatusAPIMessage
+	4,  // 26: adapter.BoatStatusMessage.client_data:type_name -> adapter.ClientData
+	11, // 27: adapter.ArrivedMessage.api_message:type_name -> adapter.ArrivedAPIMessage
+	4,  // 28: adapter.ArrivedMessage.client_data:type_name -> adapter.ClientData
 	19, // 29: adapter.Adapter.ReserveTrip:input_type -> adapter.Empty
 	13, // 30: adapter.Adapter.Ack:input_type -> adapter.AckMessage
 	19, // 31: adapter.Adapter.AtDock:input_type -> adapter.Empty
