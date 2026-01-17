@@ -89,7 +89,7 @@ message ClientData {
 // ReserveTripAPIMessage represents the ReserveTrip API message that a client
 // sends to the MockLogic
 message ReserveTripAPIMessage {
-    // message_type is a const = "reserve_trip"
+    // message_type is a const = "reserveTrip"
     string message_type     = 1;
     string auth_token       = 2;
     string client_id        = 3;
@@ -111,7 +111,7 @@ message AckAPIMessage {
 // AtDockAPIMessage reperesents the AtDock API message that the client
 // sends to the MockLogic
 message AtDockAPIMessage {
-    // message_type is a const = "at_dock"
+    // message_type is a const = "atDock"
     string message_type   = 1;
     string client_id      = 2;
     Boat   boat           = 3;
@@ -122,7 +122,7 @@ message AtDockAPIMessage {
 // OnBoatAPIMessage reperesents the OnBoat API message that the client
 // sends to the MockLogic
 message OnBoatAPIMessage {
-    // message_type is a const = "on_boat"
+    // message_type is a const = "onBoat"
     string message_type   = 1;
     string client_id      = 2;
     Boat   boat           = 3;
@@ -132,7 +132,7 @@ message OnBoatAPIMessage {
 // OffBoatAPIMessage reperesents the OffBoat API message that the client
 // sends to the MockLogic
 message OffBoatAPIMessage {
-    // message_type is a const = "off_boat"
+    // message_type is a const = "offBoat"
     string message_type   = 1;
     string client_id      = 2;
     Boat   boat           = 3;
@@ -142,7 +142,7 @@ message OffBoatAPIMessage {
 // BoatStatusAPIMessage represents the BoatStatus API message that the MockLogic
 // sends to all clients
 message BoatStatusAPIMessage {
-    // message_type is a const = "boat_status"
+    // message_type is a const = "boatStatus"
     string       message_type  = 1;
     Boat         boat          = 2;
     ServiceState service_state = 3;

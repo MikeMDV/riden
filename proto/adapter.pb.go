@@ -294,7 +294,7 @@ func (x *ClientData) GetConnType() string {
 // sends to the MockLogic
 type ReserveTripAPIMessage struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// message_type is a const = "reserve_trip"
+	// message_type is a const = "reserveTrip"
 	MessageType     string `protobuf:"bytes,1,opt,name=message_type,json=messageType,proto3" json:"message_type,omitempty"`
 	AuthToken       string `protobuf:"bytes,2,opt,name=auth_token,json=authToken,proto3" json:"auth_token,omitempty"`
 	ClientId        string `protobuf:"bytes,3,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
@@ -452,7 +452,7 @@ func (x *AckAPIMessage) GetTransactionId() string {
 // sends to the MockLogic
 type AtDockAPIMessage struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// message_type is a const = "at_dock"
+	// message_type is a const = "atDock"
 	MessageType   string `protobuf:"bytes,1,opt,name=message_type,json=messageType,proto3" json:"message_type,omitempty"`
 	ClientId      string `protobuf:"bytes,2,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
 	Boat          *Boat  `protobuf:"bytes,3,opt,name=boat,proto3" json:"boat,omitempty"`
@@ -531,7 +531,7 @@ func (x *AtDockAPIMessage) GetTransactionId() string {
 // sends to the MockLogic
 type OnBoatAPIMessage struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// message_type is a const = "on_boat"
+	// message_type is a const = "onBoat"
 	MessageType   string `protobuf:"bytes,1,opt,name=message_type,json=messageType,proto3" json:"message_type,omitempty"`
 	ClientId      string `protobuf:"bytes,2,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
 	Boat          *Boat  `protobuf:"bytes,3,opt,name=boat,proto3" json:"boat,omitempty"`
@@ -602,7 +602,7 @@ func (x *OnBoatAPIMessage) GetTransactionId() string {
 // sends to the MockLogic
 type OffBoatAPIMessage struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// message_type is a const = "off_boat"
+	// message_type is a const = "offBoat"
 	MessageType   string `protobuf:"bytes,1,opt,name=message_type,json=messageType,proto3" json:"message_type,omitempty"`
 	ClientId      string `protobuf:"bytes,2,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
 	Boat          *Boat  `protobuf:"bytes,3,opt,name=boat,proto3" json:"boat,omitempty"`
@@ -673,7 +673,7 @@ func (x *OffBoatAPIMessage) GetTransactionId() string {
 // sends to all clients
 type BoatStatusAPIMessage struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// message_type is a const = "boat_status"
+	// message_type is a const = "boatStatus"
 	MessageType   string       `protobuf:"bytes,1,opt,name=message_type,json=messageType,proto3" json:"message_type,omitempty"`
 	Boat          *Boat        `protobuf:"bytes,2,opt,name=boat,proto3" json:"boat,omitempty"`
 	ServiceState  ServiceState `protobuf:"varint,3,opt,name=service_state,json=serviceState,proto3,enum=adapter.ServiceState" json:"service_state,omitempty"`
