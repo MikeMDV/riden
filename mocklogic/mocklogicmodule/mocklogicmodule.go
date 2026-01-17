@@ -33,7 +33,7 @@ var SimDockAdjacencyList []*list.List
 // gRPC related
 var GRPCDialTimer *time.Timer
 var GRPCStreamWaitChannel chan struct{}
-var Once sync.Once
+var Once *sync.Once
 var CloseWaitChan func()
 var AdapterAckChannel chan a.AckMockLogicMessage
 var AdapterBoatStatusChannel chan a.BoatStatusMockLogicMessage
@@ -56,6 +56,8 @@ func InitializeSimFrames() {
 }
 
 func InitializeAdapterGRPCStreams() {
+	// Create new *sync.Once
+	Once = new(sync.Once)
 	var opts []grpc.DialOption // No options, currently
 	conn, err := grpc.NewClient(a.GRPCServerAddress, opts...)
 	if err != nil {
