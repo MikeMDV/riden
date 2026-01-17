@@ -48,9 +48,9 @@ func InitializeSimFrames() {
 
 	SimDockAdjacencyList = BuildDockAdjacencyList()
 
-	// TODO: Make Trip structure and ReservedTrips sync.Map [boatID]Trip to hold reserved trips and
-	// check if Arrived should be sent every time a new status is updated.
-	// Need to track AtDock, OnBoat, and OffBoat
+	// TODO: Make safeTrips sync.Map [string]Trip to hold reserved trips and
+	// create loop to check SimFrameBoatStatusChannel and determine if Arrived
+	// should be sent every time a new status is updated.
 
 	go AdvanceSimFrames()
 }

@@ -148,7 +148,7 @@ func ReturnDistance(start, goal a.Dock) int8 {
 		return 0
 	}
 
-	// Get the next dock after a and recursivly call
+	// Get the next dock after start and recursively call
 	// ReturnDistance()
 	var nextDock a.Dock
 	for _, dockList := range SimDockAdjacencyList {
