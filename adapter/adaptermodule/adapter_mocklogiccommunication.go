@@ -75,7 +75,11 @@ func ProcessMessageToMockLogic(mlMsg *MockLogicMessage) {
 		}
 		reserveTripMockLogicMsg := a.NewReserveTripMockLogicMessage(apiMsg, clientData)
 
-		GRPCChans.ReserveTripChannel <- reserveTripMockLogicMsg
+		select {
+		case GRPCChans.ReserveTripChannel <- reserveTripMockLogicMsg:
+		default:
+			Logger.Error().Msgf("could not place messaage on ReserveTripChannel: %+v", reserveTripMockLogicMsg)
+		}
 
 	case a.APIMessageTypeAtDock:
 		Logger.Info().Msgf("Processing %s message to MockLogic from ConnName: %s, ConnType: %s",
@@ -91,7 +95,11 @@ func ProcessMessageToMockLogic(mlMsg *MockLogicMessage) {
 
 		atDockMockLogicMessage := a.NewAtDockMockLogicMessage(apiMsg, clientData)
 
-		GRPCChans.AtDockChannel <- atDockMockLogicMessage
+		select {
+		case GRPCChans.AtDockChannel <- atDockMockLogicMessage:
+		default:
+			Logger.Error().Msgf("could not place messaage on AtDockChannel: %+v", atDockMockLogicMessage)
+		}
 
 	case a.APIMessageTypeOnBoat:
 		Logger.Info().Msgf("Processing %s message to MockLogic from ConnName: %s, ConnType: %s",
@@ -107,7 +115,11 @@ func ProcessMessageToMockLogic(mlMsg *MockLogicMessage) {
 
 		onBoatMockLogicMessage := a.NewOnBoatMockLogicMessage(apiMsg, clientData)
 
-		GRPCChans.OnBoatChannel <- onBoatMockLogicMessage
+		select {
+		case GRPCChans.OnBoatChannel <- onBoatMockLogicMessage:
+		default:
+			Logger.Error().Msgf("could not place messaage on OnBoatChannel: %+v", onBoatMockLogicMessage)
+		}
 
 	case a.APIMessageTypeOffBoat:
 		Logger.Info().Msgf("Processing %s message to MockLogic from ConnName: %s, ConnType: %s",
@@ -123,7 +135,11 @@ func ProcessMessageToMockLogic(mlMsg *MockLogicMessage) {
 
 		offBoatMockLogicMessage := a.NewOffBoatMockLogicMessage(apiMsg, clientData)
 
-		GRPCChans.OffBoatChannel <- offBoatMockLogicMessage
+		select {
+		case GRPCChans.OffBoatChannel <- offBoatMockLogicMessage:
+		default:
+			Logger.Error().Msgf("could not place messaage on OffBoatChannel: %+v", offBoatMockLogicMessage)
+		}
 
 	default:
 		Logger.Warn().Msgf("Received unknown message type, %s, from ConnName: %s, ConnType: %s",

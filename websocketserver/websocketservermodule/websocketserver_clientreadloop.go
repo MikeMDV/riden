@@ -43,7 +43,11 @@ func ClientReadLoop(c *Client) error {
 
 		// Check if adapter channel is open
 		if AdapterConn.Write != nil && !adapterLost {
-			AdapterConn.Write <- adapterMsg
+			select {
+			case AdapterConn.Write <- adapterMsg:
+			default:
+				Logger.Error().Msgf("could not place messaage on AdapterConn.Write: %+v", adapterMsg)
+			}
 		} else {
 			// The adapter connection and the write channel were lost. Reply with a close control message
 			Logger.Error().Msgf("Adapter write channel was lost. Cannot process message from client: %s, Sending close message with code 1011",
