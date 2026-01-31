@@ -15,12 +15,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/rs/zerolog"
 	"google.golang.org/grpc"
 )
 
 // Logger Handles all log writing for the MockLogic
-var Logger zerolog.Logger
+var Logger logger.Logger
 
 var LogDirectory string
 
