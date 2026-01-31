@@ -15,14 +15,12 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/rs/zerolog"
-
 	"github.com/gorilla/websocket"
 	"google.golang.org/grpc"
 )
 
 // Logger Handles all log writing for the Adapter
-var Logger zerolog.Logger
+var Logger logger.Logger
 
 var LogDirectory string
 

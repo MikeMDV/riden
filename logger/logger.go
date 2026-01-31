@@ -10,10 +10,14 @@ import (
 	"github.com/rs/zerolog"
 )
 
+type Logger struct {
+	zerolog.Logger
+}
+
 const timeFormat string = "2006-01-02 15:04:05.000000"
 
-func InitializeLogger(logFile, levelStr string) (zerolog.Logger, error) {
-	var logger zerolog.Logger
+func InitializeLogger(logFile, levelStr string) (Logger, error) {
+	var logger Logger
 	// Open file
 	f, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
@@ -60,7 +64,9 @@ func InitializeLogger(logFile, levelStr string) (zerolog.Logger, error) {
 		return filepath.Base(file) + ":" + strconv.Itoa(line)
 	}
 
-	logger = zerolog.New(f).With().Timestamp().Caller().Logger()
+	logger = Logger{
+		zerolog.New(f).With().Timestamp().Caller().Logger(),
+	}
 
 	return logger, err
 }

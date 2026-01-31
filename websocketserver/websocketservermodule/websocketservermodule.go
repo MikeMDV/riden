@@ -11,13 +11,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/rs/zerolog"
-
 	"github.com/gorilla/websocket"
 )
 
 // Logger Handles all log writing for the WebSocketServer
-var Logger zerolog.Logger
+var Logger logger.Logger
 
 var LogDirectory string
 
