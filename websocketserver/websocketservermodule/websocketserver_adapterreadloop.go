@@ -49,7 +49,11 @@ func AdapterReadLoop(a *Client) error {
 			safeClients.Range(func(key, clientVal interface{}) bool {
 				client := clientVal.(*Client)
 
-				client.Write <- adapterMsg
+				select {
+				case client.Write <- adapterMsg:
+				default:
+					Logger.Error().Msgf("could not place messaage on client.Write: %+v", adapterMsg)
+				}
 
 				return true
 			})
@@ -64,7 +68,11 @@ func AdapterReadLoop(a *Client) error {
 			}
 			client = clientVal.(*Client)
 
-			client.Write <- adapterMsg
+			select {
+			case client.Write <- adapterMsg:
+			default:
+				Logger.Error().Msgf("could not place messaage on client.Write: %+v", adapterMsg)
+			}
 		}
 	}
 }
