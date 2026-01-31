@@ -25,9 +25,8 @@ func WSServerWriteLoop(wsServer *WebSocketServerConnnection) error {
 			wsServer.Conn.WriteControl(websocket.PingMessage, []byte{}, time.Now().Add(WriteControlDeadline))
 			wsServer.KeepAliveTimer = time.AfterFunc(time.Duration(59*time.Second),
 				InitializeWebSocketServerConn)
-		case closeSignal := <-wsServer.Close:
-			Logger.Info().Msgf("WebSocket server write loop has received a close signal, %d",
-				closeSignal)
+		case <-wsServer.Close:
+			Logger.Info().Msg("WebSocket server write loop has received a close signal")
 			// handle close
 			return err
 		case adapterMsg := <-wsServer.Write:

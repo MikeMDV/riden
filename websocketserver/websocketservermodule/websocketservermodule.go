@@ -24,7 +24,7 @@ var LogDirectory string
 // operations should occur on the connection.
 type Client struct {
 	WSConn *websocket.Conn
-	Close  chan int
+	Close  chan struct{}
 	Write  chan wss.AdapterMessage
 }
 
@@ -34,7 +34,7 @@ func (c *Client) RemoteConnString() string {
 
 // Initialize sets up a client's channels and handlers
 func (c *Client) Initialize() {
-	c.Close = make(chan int)
+	c.Close = make(chan struct{})
 	c.Write = make(chan wss.AdapterMessage, ChannelBufferSize)
 }
 

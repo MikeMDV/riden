@@ -15,9 +15,9 @@ func ClientWriteLoop(c *Client) error {
 
 	for {
 		select {
-		case closeSignal := <-c.Close:
-			Logger.Info().Msgf("Client write loop for client connected at %s has received a close signal, %d",
-				c.RemoteConnString(), closeSignal)
+		case <-c.Close:
+			Logger.Info().Msgf("Client write loop for client connected at %s has received a close signal",
+				c.RemoteConnString())
 			// handle close
 			return err
 		case adapterMsg := <-c.Write:

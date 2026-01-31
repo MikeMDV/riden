@@ -34,7 +34,7 @@ const WSChannelBufferSize int = 1024
 
 type WebSocketServerConnnection struct {
 	Conn  *websocket.Conn
-	Close chan int
+	Close chan struct{}
 	Write chan wss.AdapterMessage
 	// RetryStatusCodes contains the list of status codes to retry,
 	// use "x" as a wildcard for a single digit (default: [500])
@@ -48,7 +48,7 @@ func (ws *WebSocketServerConnnection) RemoteConnString() string {
 
 // Initialize sets up a client's channels and handlers
 func (ws *WebSocketServerConnnection) Initialize() {
-	ws.Close = make(chan int)
+	ws.Close = make(chan struct{})
 	ws.Write = make(chan wss.AdapterMessage, WSChannelBufferSize)
 
 	ws.Conn.SetPongHandler(func(msg string) error {
