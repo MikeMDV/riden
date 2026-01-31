@@ -385,9 +385,8 @@ func AdvanceSimFrames() {
 			}
 			SimFrameRing = SimFrameRing.Next()
 
-		case stopSignal := <-StopSimFrames:
-			Logger.Info().Msgf("AdvanceSimFrames has received a stop signal, %d",
-				stopSignal)
+		case <-StopSimFrames:
+			Logger.Info().Msg("AdvanceSimFrames has received a stop signal")
 			// handle close
 			return
 		}

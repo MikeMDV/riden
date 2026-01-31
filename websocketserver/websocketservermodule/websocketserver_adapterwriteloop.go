@@ -18,9 +18,9 @@ func AdapterWriteLoop(a *Client) error {
 
 	for {
 		select {
-		case closeSignal := <-a.Close:
-			Logger.Info().Msgf("Client write loop for adapter connected at %s has received a close signal, %d",
-				remoteAddr, closeSignal)
+		case <-a.Close:
+			Logger.Info().Msgf("Client write loop for adapter connected at %s has received a close signal",
+				remoteAddr)
 			// handle close
 			return err
 		case adapterMsg := <-a.Write:

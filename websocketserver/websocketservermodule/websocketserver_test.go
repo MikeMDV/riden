@@ -439,7 +439,7 @@ func TestSendingMessageFromClientToAdapter(t *testing.T) {
 	Logger.Info().Msgf("Test attempting to close remote connection: %s", ws.LocalAddr().String())
 	ws.WriteControl(websocket.CloseMessage, msg, time.Now().Add(WriteControlDeadline))
 
-	AdapterConn.Close <- 0
+	AdapterConn.Close <- struct{}{}
 
 	// Adapter sends a close message with 1000 status code
 	Logger.Info().Msgf("Test attempting to close remote connection: %s", aws.LocalAddr().String())
@@ -539,7 +539,7 @@ func TestSendingMessageFromAdapterToClient(t *testing.T) {
 		t.Fatal("Error deleting client from safeClients in test clean-up")
 	}
 	client := clientVal.(*Client)
-	client.Close <- 0
+	client.Close <- struct{}{}
 
 	// Clients send a close message with 1000 status code
 	msg := websocket.FormatCloseMessage(websocket.CloseNormalClosure, "")

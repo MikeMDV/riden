@@ -25,7 +25,7 @@ var LogDirectory string
 
 // Simulation frame related
 var SimFrameRing *ring.Ring
-var StopSimFrames chan int
+var StopSimFrames chan struct{}
 var SimFrameBoatStatusChannel chan a.BoatStatusAPIMessage
 var SimDockAdjacencyList map[string]*list.List
 
