@@ -28,7 +28,7 @@ var LogDirectory string
 var SimFrameRing *ring.Ring
 var StopSimFrames chan int
 var SimFrameBoatStatusChannel chan a.BoatStatusAPIMessage
-var SimDockAdjacencyList []*list.List
+var SimDockAdjacencyList map[string]*list.List
 
 // gRPC related
 var GRPCDialTimer *time.Timer

@@ -394,16 +394,15 @@ func AdvanceSimFrames() {
 	}
 }
 
-// BuildDockAdjacencyList places the SimDocks in a []list.List containers.
-// This adjacency list stores the order of the docks that the boats
+// BuildDockAdjacencyList places the SimDocks in a map[string]*list.List
+// container. This adjacency list stores the order of the docks that the boats
 // travel
-func BuildDockAdjacencyList() []*list.List {
+func BuildDockAdjacencyList() map[string]*list.List {
 	docks := []a.Dock{SimDock1, SimDock2, SimDock3, SimDock4}
-	var adjacencyList []*list.List
+	var adjacencyList = make(map[string]*list.List)
 
 	for i, dock := range docks {
 		list := list.New()
-		_ = list.PushBack(dock)
 		if i < len(docks)-1 {
 			_ = list.PushBack(docks[i+1])
 		} else {
@@ -411,7 +410,7 @@ func BuildDockAdjacencyList() []*list.List {
 			// dock onto the list
 			_ = list.PushBack(docks[0])
 		}
-		adjacencyList = append(adjacencyList, list)
+		adjacencyList[dock.Address.Street] = list
 	}
 
 	return adjacencyList

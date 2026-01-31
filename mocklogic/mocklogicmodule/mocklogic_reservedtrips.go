@@ -151,11 +151,7 @@ func ReturnDistance(start, goal a.Dock) int8 {
 	// Get the next dock after start and recursively call
 	// ReturnDistance()
 	var nextDock a.Dock
-	for _, dockList := range SimDockAdjacencyList {
-		if dockList.Front().Value == start {
-			nextDock = dockList.Front().Next().Value.(a.Dock)
-		}
-	}
+	nextDock = SimDockAdjacencyList[start.Address.Street].Front().Value.(a.Dock)
 
 	return 1 + ReturnDistance(nextDock, goal)
 }
