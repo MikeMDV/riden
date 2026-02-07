@@ -229,7 +229,7 @@ func runOffBoat(ctx context.Context, client pb.AdapterClient) {
 // Adapter and is not expected to receive any Empty messages from the Adapter, so
 // Recv() will not be called.
 func runAck(ctx context.Context, client pb.AdapterClient) {
-	Logger.Info().Msg("Starting ReserveTrip stream")
+	Logger.Info().Msg("Starting Ack stream")
 
 	stream, err := client.Ack(ctx)
 	if err != nil {
@@ -277,7 +277,7 @@ func runAck(ctx context.Context, client pb.AdapterClient) {
 // Adapter and is not expected to receive any Empty messages from the Adapter, so
 // Recv() will not be called.
 func runBoatStatus(ctx context.Context, client pb.AdapterClient) {
-	Logger.Info().Msg("Starting ReserveTrip stream")
+	Logger.Info().Msg("Starting BoatStatus stream")
 
 	stream, err := client.BoatStatus(ctx)
 	if err != nil {
@@ -350,7 +350,7 @@ func runBoatStatus(ctx context.Context, client pb.AdapterClient) {
 // Adapter and is not expected to receive any Empty messages from the Adapter, so
 // Recv() will not be called.
 func runArrived(ctx context.Context, client pb.AdapterClient) {
-	Logger.Info().Msg("Starting ReserveTrip stream")
+	Logger.Info().Msg("Starting Arrived stream")
 
 	stream, err := client.Arrived(ctx)
 	if err != nil {
