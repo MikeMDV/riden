@@ -49,7 +49,7 @@ func (grpcc *GRPCChannels) CloseOffBoat() {
 	close(grpcc.OffBoatChannel)
 }
 
-var GRPCChannelBufferSize int = 1024
+const GRPCChannelBufferSize int = 32
 
 var GRPCChans GRPCChannels
 

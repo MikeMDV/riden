@@ -46,7 +46,7 @@ func (c *Client) CleanUpAfterReadLoop() {
 	c.WSConn.Close()
 }
 
-const ChannelBufferSize int = 1024
+const ChannelBufferSize int = 32
 
 // WriteControlDeadline is a duration of time to be added to the time of the
 // control message write operation

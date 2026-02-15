@@ -30,7 +30,7 @@ var WriteControlDeadline time.Duration = 5 * time.Second
 
 var WSServerURL string = "ws://" + wss.WSServerHost + ":" + wss.WSServerPort + wss.WSServerAdapterPath
 
-const WSChannelBufferSize int = 1024
+const WSChannelBufferSize int = 32
 
 type WebSocketServerConnnection struct {
 	Conn  *websocket.Conn
