@@ -69,7 +69,7 @@ func InitializeAdapterGRPCStreams() {
 		GRPCDialTimer.Stop()
 	}
 
-	// Make channels for incoming messages
+	// Make channels for outgoing messages
 	AdapterAckChannel = make(chan a.AckMockLogicMessage)
 	AdapterBoatStatusChannel = make(chan a.BoatStatusMockLogicMessage, 2)
 	AdapterArrivedChannel = make(chan a.ArrivedMockLogicMessage)
@@ -111,6 +111,7 @@ func runReserveTrip(ctx context.Context, client pb.AdapterClient) {
 	if err != nil {
 		Logger.Error().Msgf("client.Reserve failed to create stream: %s", err.Error())
 		Once.Do(CloseWaitChan)
+		return
 	}
 
 	for {
@@ -142,6 +143,7 @@ func runAtDock(ctx context.Context, client pb.AdapterClient) {
 	if err != nil {
 		Logger.Error().Msgf("client.AtDock failed to create stream: %s", err.Error())
 		Once.Do(CloseWaitChan)
+		return
 	}
 
 	for {
@@ -173,6 +175,7 @@ func runOnBoat(ctx context.Context, client pb.AdapterClient) {
 	if err != nil {
 		Logger.Error().Msgf("client.OnBoat failed to create stream: %s", err.Error())
 		Once.Do(CloseWaitChan)
+		return
 	}
 
 	for {
@@ -204,6 +207,7 @@ func runOffBoat(ctx context.Context, client pb.AdapterClient) {
 	if err != nil {
 		Logger.Error().Msgf("client.OffBoat failed to create stream: %s", err.Error())
 		Once.Do(CloseWaitChan)
+		return
 	}
 
 	for {
@@ -235,6 +239,7 @@ func runAck(ctx context.Context, client pb.AdapterClient) {
 	if err != nil {
 		Logger.Error().Msgf("client.Ack failed to create stream: %s", err.Error())
 		Once.Do(CloseWaitChan)
+		return
 	}
 
 	for {
@@ -283,6 +288,7 @@ func runBoatStatus(ctx context.Context, client pb.AdapterClient) {
 	if err != nil {
 		Logger.Error().Msgf("client.BoatStatus failed to create stream: %s", err.Error())
 		Once.Do(CloseWaitChan)
+		return
 	}
 
 	for {
@@ -356,6 +362,7 @@ func runArrived(ctx context.Context, client pb.AdapterClient) {
 	if err != nil {
 		Logger.Error().Msgf("client.Arrived failed to create stream: %s", err.Error())
 		Once.Do(CloseWaitChan)
+		return
 	}
 
 	for {
