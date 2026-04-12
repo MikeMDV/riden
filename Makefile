@@ -21,30 +21,30 @@ BUILDVERSION=Test
 
 all: build
 
-build: adapt mocklogicmodule websocket
+build: adapter mocklogic websocketserver
 
-adapt:
-	cd adapter/adaptermodule && $(GOBUILD) -ldflags '-X riden/adapter/adapter.VersionNumber=$(BUILDVERSION) -X "riden/adapter/adapter.BuildDate=$(BUILDDATE)"' -o $(BIN_DIRECTORY)/Adapter
+adapter:
+	cd src/go/adapter/adaptermodule && $(GOBUILD) -ldflags '-X riden/adapter/adapter.VersionNumber=$(BUILDVERSION) -X "riden/adapter/adapter.BuildDate=$(BUILDDATE)"' -o $(BIN_DIRECTORY)/Adapter
 
-mocklogicmodule:
-	cd mocklogic/mocklogicmodule && $(GOBUILD) -o $(BIN_DIRECTORY)/MockLogic
+mocklogic:
+	cd src/go/mocklogic/mocklogicmodule && $(GOBUILD) -o $(BIN_DIRECTORY)/MockLogic
 
-websocket:
-	cd websocketserver/websocketservermodule && $(GOBUILD) -ldflags '-X riden/websocketserver/websocketserver.VersionNumber=$(BUILDVERSION) -X "riden/websocketserver/websocketserver.BuildDate=$(BUILDDATE)"' -o $(BIN_DIRECTORY)/WebSocketServer
+websocketserver:
+	cd src/go/websocketserver/websocketservermodule && $(GOBUILD) -ldflags '-X riden/websocketserver/websocketserver.VersionNumber=$(BUILDVERSION) -X "riden/websocketserver/websocketserver.BuildDate=$(BUILDDATE)"' -o $(BIN_DIRECTORY)/WebSocketServer
 
-test: adapt_test mocklogicmodule_test websocket_test
+test: adapter_test mocklogic_test websocketserver_test
 
-adapt_test:
+adapter_test:
 	# Adapter Test
-	cd adapter/adaptermodule && $(GOTEST) -v
+	cd src/go/adapter/adaptermodule && $(GOTEST) -v
 
-mocklogicmodule_test:
+mocklogic_test:
 	# MockLogic Test
-	cd mocklogic/mocklogicmodule && $(GOTEST) -v
+	cd src/go/mocklogic/mocklogicmodule && $(GOTEST) -v
 
-websocket_test:
+websocketserver_test:
 	# WebSocketServer Test
-	cd websocketserver/websocketservermodule && $(GOTEST) -v
+	cd src/go/websocketserver/websocketservermodule && $(GOTEST) -v
 
 dependencies:
 	$(GOGET) github.com/gorilla/websocket
