@@ -21,7 +21,7 @@ BUILDVERSION=Test
 
 all: build
 
-build: adapt mocklogicmodule websocket
+build: adapter mocklogic websocketserver
 
 adapter:
 	cd src/go/adapter/adaptermodule && $(GOBUILD) -ldflags '-X riden/adapter/adapter.VersionNumber=$(BUILDVERSION) -X "riden/adapter/adapter.BuildDate=$(BUILDDATE)"' -o $(BIN_DIRECTORY)/Adapter
